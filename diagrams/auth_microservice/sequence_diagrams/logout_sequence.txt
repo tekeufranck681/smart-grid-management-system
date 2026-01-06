@@ -1,0 +1,27 @@
+Sequence Steps – Logout
+
+Actors / Components:
+
+User (clicks logout)
+
+Web App / CLI
+
+AuthService
+
+Database (RefreshToken table)
+
+Flow:
+
+User clicks Logout in the Web App / CLI
+
+Web App calls AuthService.logout(user_id, refreshToken)
+
+AuthService:
+
+Validates the refresh token (optional, for safety)
+
+Marks / revokes refresh token in DB
+
+AuthService returns success to client
+
+After this, any attempt to use the revoked refresh token will fail → user must login again.

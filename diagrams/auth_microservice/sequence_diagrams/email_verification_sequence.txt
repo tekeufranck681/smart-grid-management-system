@@ -1,0 +1,31 @@
+Sequence Steps – Email Verification
+
+Actors / Components:
+
+User (clicks verification link in email)
+
+Web App / CLI
+
+AuthService
+
+Database (User + EmailVerificationToken tables)
+
+Flow:
+
+User clicks verification link (with token)
+
+Web App sends token to AuthService.verifyEmail(token)
+
+AuthService:
+
+Validates token (exists, not expired, not used)
+
+Marks token as used
+
+Updates user.email_verified = true
+
+AuthService returns success/failure to client
+
+Optional branch:
+
+Token expired → request resend email verification

@@ -1,0 +1,35 @@
+Sequence Steps – Refresh Token
+
+Actors / Components:
+
+Web App / CLI
+
+AuthService
+
+TokenService (for validating/generating tokens)
+
+Database (RefreshToken table)
+
+Flow:
+
+Web App detects access token expired
+
+Sends refresh token to AuthService (/auth/refresh)
+
+AuthService:
+
+Fetches refresh token from DB
+
+Validates: exists, not expired, not revoked
+
+Optional: Revoke old refresh token (rotation)
+
+Generate new access token via TokenService
+
+Generate new refresh token via TokenService
+
+Store new refresh token in DB
+
+Return new access + refresh token to client
+
+If token invalid/expired → return 401 → user must login again

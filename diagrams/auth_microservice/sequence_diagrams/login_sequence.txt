@@ -1,0 +1,41 @@
+Sequence Steps – Login
+
+Actors / Components:
+
+User (enters email & password)
+
+Web App / CLI
+
+AuthService
+
+PasswordService (for verifying password)
+
+TokenService (for access/refresh token creation)
+
+Database (User + RefreshToken tables)
+
+Flow:
+
+User submits email + password
+
+Web App sends login request to AuthService.login(email, password)
+
+AuthService:
+
+Fetches user from DB
+
+Checks user.email_verified = true
+
+Passes password to PasswordService.verifyPassword
+
+If password is correct:
+
+Generate Access Token via TokenService
+
+Generate Refresh Token via TokenService
+
+Store Refresh Token in DB
+
+AuthService returns Access Token + Refresh Token to client
+
+If login fails → return error

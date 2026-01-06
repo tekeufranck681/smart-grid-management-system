@@ -1,0 +1,43 @@
+Sequence Steps – User Registration
+
+Actors / Components:
+
+User (frontend / CLI)
+
+Web App / CLI client
+
+AuthService
+
+EmailService
+
+Database (User + EmailVerificationToken tables)
+
+Flow:
+
+User submits registration form (email + password)
+
+Web App calls AuthService.register()
+
+AuthService:
+
+Hashes password
+
+Creates User row
+
+Creates EmailVerificationToken row
+
+AuthService calls EmailService.sendVerificationEmail()
+
+EmailService sends email to user
+
+User clicks verification link (later sequence, optional here)
+
+Token validated → user.email_verified = true
+
+Optional branch: Resend email verification
+
+If user requests resend:
+
+AuthService generates new token
+
+EmailService sends again

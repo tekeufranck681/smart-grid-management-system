@@ -1,0 +1,298 @@
+openapi: 3.1.0
+info:
+  title: SGMS Auth Microservice API
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Welcome
+      description: Welcome message endpoint.
+      operationId: welcome__get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Welcome  Get
+  /api/v1/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register User
+      description: Register a new user
+      operationId: register_user_api_v1_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/auth/verify-email:
+    post:
+      tags:
+        - Authentication
+      summary: Verify Email
+      description: Verify email address
+      operationId: verify_email_api_v1_auth_verify_email_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyTokenRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/auth/resend-verification:
+    post:
+      tags:
+        - Authentication
+      summary: Resend Verification
+      description: Resend email verification
+      operationId: resend_verification_api_v1_auth_resend_verification_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResendVerificationRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      operationId: login_api_v1_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/auth/refresh-token:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh Token
+      operationId: refresh_token_api_v1_auth_refresh_token_post
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/auth/forgot-password:
+    post:
+      tags:
+        - Authentication
+      summary: Forgot Password Route
+      operationId: forgot_password_route_api_v1_auth_forgot_password_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/auth/reset-password:
+    post:
+      tags:
+        - Authentication
+      summary: Reset Password Route
+      operationId: reset_password_route_api_v1_auth_reset_password_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout Route
+      operationId: logout_route_api_v1_auth_logout_post
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/auth/verify-token:
+    post:
+      tags:
+        - Token Verification
+      summary: Verify Token
+      description: Verify access token and return user context
+      operationId: verify_token_api_v1_auth_verify_token_post
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    ForgotPasswordRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+          description: The email address of the user requesting a password reset
+      type: object
+      required:
+        - email
+      title: ForgotPasswordRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ResendVerificationRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+          description: The email address of the user to resend verification
+      type: object
+      required:
+        - email
+      title: ResendVerificationRequest
+    ResetPasswordRequest:
+      properties:
+        token:
+          type: string
+          title: Token
+          description: The password reset token
+        new_password:
+          type: string
+          title: New Password
+          description: The new password for the user
+      type: object
+      required:
+        - token
+        - new_password
+      title: ResetPasswordRequest
+    UserRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+          description: The email address of the new user
+        password:
+          type: string
+          title: Password
+          description: The desired password for the new user
+      type: object
+      required:
+        - email
+        - password
+      title: UserRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+    VerifyTokenRequest:
+      properties:
+        token:
+          type: string
+          title: Token
+          description: The access token to be verified
+      type: object
+      required:
+        - token
+      title: VerifyTokenRequest

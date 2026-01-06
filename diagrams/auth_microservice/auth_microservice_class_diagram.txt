@@ -1,0 +1,100 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =======================
+' ENTITIES (DB TABLES)
+' =======================
+
+class User {
+  +id: UUID
+  +email: String
+  -password_hash: String
+  +role: String
+  +email_verified: Boolean
+  +is_active: Boolean
+  +created_at: DateTime
+  +updated_at: DateTime
+
+  +verifyEmail(): void
+  +changePassword(newHash: String): void
+  +deactivate(): void
+}
+
+class RefreshToken {
+  +id: UUID
+  +user_id: UUID
+  -token_hash: String
+  +expires_at: DateTime
+  +revoked: Boolean
+  +created_at: DateTime
+
+  +isExpired(): Boolean
+  +revoke(): void
+}
+
+class EmailVerificationToken {
+  +id: UUID
+  +user_id: UUID
+  -token_hash: String
+  +expires_at: DateTime
+  +used: Boolean
+  +created_at: DateTime
+
+  +markUsed(): void
+  +isExpired(): Boolean
+}
+
+class PasswordResetToken {
+  +id: UUID
+  +user_id: UUID
+  -token_hash: String
+  +expires_at: DateTime
+  +used: Boolean
+  +created_at: DateTime
+
+  +markUsed(): void
+  +isExpired(): Boolean
+}
+
+' =======================
+' SERVICES (BUSINESS LOGIC)
+' =======================
+
+class AuthService {
+  +register(email, password): User
+  +login(email, password): TokenPair
+  +refreshToken(refreshToken): TokenPair
+  +logout(userId): void
+}
+
+class TokenService {
+  +generateAccessToken(user): String
+  +generateRefreshToken(user): RefreshToken
+  +hashToken(token): String
+  +verifyToken(rawToken, hashedToken): Boolean
+}
+
+class PasswordService {
+  +hashPassword(password): String
+  +verifyPassword(password, hash): Boolean
+}
+
+class EmailService {
+  +sendVerificationEmail(user, token): void
+  +sendPasswordResetEmail(user, token): void
+}
+
+' =======================
+' RELATIONSHIPS
+' =======================
+
+User "1" -- "0..*" RefreshToken
+User "1" -- "0..*" EmailVerificationToken
+User "1" -- "0..*" PasswordResetToken
+
+AuthService --> User
+AuthService --> TokenService
+AuthService --> PasswordService
+AuthService --> EmailService
+
+@enduml
