@@ -1,0 +1,57 @@
+Grid Management – JSON Import (Full Grid Topology)
+Sequence Steps – Import Grid from JSON
+
+Actors / Components:
+
+User
+
+Frontend (Web App / CLI)
+
+Workspace & Grid Management Service
+
+Database (Grid, GridNode, GridEdge tables)
+
+Purpose:
+Import a complete grid topology (grid metadata + batch nodes + batch edges) into a workspace as a single atomic operation.
+
+Flow:
+
+User selects a workspace and chooses “Import Grid”
+
+User uploads a JSON file containing grid metadata, nodes, and edges
+
+Frontend sends POST /workspaces/{workspace_id}/grids/import with JSON payload
+
+Grid Service:
+
+Validates JWT
+
+Verifies user access to workspace
+
+Validates JSON schema (grid, nodes, edges)
+
+Validates topology constraints:
+
+Nodes are well-formed
+
+Edge endpoints reference existing node logical IDs
+
+No self-loops or invalid duplicates
+
+Grid Service starts database transaction
+
+Grid Service creates Grid record
+
+Grid Service maps logical node IDs → persistent node IDs
+
+Grid Service persists all nodes in batch
+
+Grid Service persists all edges using resolved node IDs
+
+Grid Service commits transaction
+
+Database confirms success
+
+Grid Service returns created grid + full topology
+
+Frontend renders imported grid on canvas

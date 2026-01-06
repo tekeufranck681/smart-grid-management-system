@@ -1,0 +1,39 @@
+Update GridEdge Attributes
+
+(Capacity, losses, priority, status)
+
+Sequence Steps – Update GridEdge
+
+Actors / Components:
+
+User
+
+Frontend
+
+Grid Service
+
+Database
+
+Flow:
+
+User selects an edge
+
+User edits edge properties in side panel
+
+Frontend sends PUT /edges/{edge_id}
+
+Grid Service:
+
+Authenticates user
+
+Validates edge ownership
+
+Validates new parameters
+
+Grid Service updates edge record
+
+Database confirms update
+
+Grid Service returns updated edge
+
+Frontend refreshes edge rendering

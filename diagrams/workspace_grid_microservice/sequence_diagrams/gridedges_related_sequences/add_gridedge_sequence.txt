@@ -1,0 +1,50 @@
+Add Edge (Connect Two Nodes)
+Sequence Steps – Add GridEdge
+
+Actors / Components:
+
+User
+
+Frontend (Grid Canvas UI)
+
+Workspace & Grid Management Service
+
+Database (GridEdge table)
+
+Flow:
+
+User selects “Add Line / Edge” tool
+
+User clicks source node
+
+User clicks target node
+
+Frontend collects edge attributes:
+
+Capacity
+
+Loss factor
+
+Priority
+
+Direction (optional)
+
+Frontend sends POST /grids/{grid_id}/edges
+
+Grid Service:
+
+Validates JWT
+
+Validates grid access
+
+Validates nodes belong to same grid
+
+Prevents self-loops and duplicates (if configured)
+
+Grid Service persists edge
+
+Database returns edge ID
+
+Grid Service returns created edge
+
+Frontend renders line between nodes

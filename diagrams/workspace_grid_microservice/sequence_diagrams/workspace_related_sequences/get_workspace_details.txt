@@ -1,0 +1,32 @@
+Get Workspace Details
+Sequence Steps – Get Workspace Details
+
+Actors / Components:
+
+User
+
+Frontend
+
+Workspace Service
+
+Database
+
+Flow:
+
+User selects a workspace
+
+Frontend sends GET /workspaces/{id}
+
+Workspace Service:
+
+Authenticates user
+
+Authorizes access to workspace
+
+Workspace Service fetches workspace metadata
+
+Database returns workspace record
+
+Workspace Service returns workspace details
+
+Frontend renders workspace overview

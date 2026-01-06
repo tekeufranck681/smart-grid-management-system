@@ -1,0 +1,32 @@
+Create Workspace
+Sequence Steps – Create Workspace
+
+Actors / Components:
+
+User
+
+Frontend (Web App / CLI)
+
+Workspace & Grid Management Service
+
+Database (Workspace table)
+
+Flow:
+
+User submits “Create Workspace” form (name, description, visibility)
+
+Frontend sends POST /workspaces request with JWT
+
+Workspace Service:
+
+Validates JWT and user permissions
+
+Validates workspace data
+
+Workspace Service persists new workspace in database
+
+Database returns created workspace ID
+
+Workspace Service returns workspace details to frontend
+
+Frontend updates UI with new workspace

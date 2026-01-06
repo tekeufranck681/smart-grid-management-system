@@ -1,0 +1,128 @@
+@startuml
+package "Workspace & Grid Management Service" {
+
+    enum WorkspaceVisibility {
+        PRIVATE
+        SHARED
+    }
+
+    enum GridNodeType {
+        PLANT
+        LOAD
+        SUBSTATION
+    }
+
+    enum PlantType {
+        HYDRO
+        SOLAR
+        THERMAL
+    }
+
+    enum LoadType {
+        HOSPITAL
+        ENTERPRISE
+        RESIDENTIAL
+        INDUSTRIAL
+    }
+
+    enum EdgeState {
+        ACTIVE
+        DISABLED
+    }
+
+    class Workspace {
+        - id: UUID
+        - name: String
+        - description: String
+        - owner_id: UUID
+        - visibility: WorkspaceVisibility
+        - created_at: DateTime
+        - updated_at: DateTime
+        --
+        + add_grid(grid: Grid)
+        + remove_grid(grid: Grid)
+        + list_grids(): List<Grid>
+        + assign_scenario(scenario_id: UUID)
+        + remove_scenario(scenario_id: UUID)
+    }
+
+    class Grid {
+        - id: UUID
+        - workspace_id: UUID
+        - name: String
+        - description: String
+        - base_power_mva: Float
+        - voltage_level_kv: Float
+        - is_active: Boolean
+        - created_at: DateTime
+        - updated_at: DateTime
+        --
+        + add_node(node: GridNode)
+        + remove_node(node: GridNode)
+        + add_edge(edge: GridEdge)
+        + remove_edge(edge: GridEdge)
+    }
+
+    class GridNode {
+        - id: UUID
+        - grid_id: UUID
+        - type: GridNodeType
+        - name: String
+        - plant_type: PlantType
+        - load_type: LoadType
+        - demand_mw: Float
+        - capacity_mw: Float
+        - priority: Integer
+        - x: Float
+        - y: Float
+        - created_at: DateTime
+        - updated_at: DateTime
+        --
+        + move(new_x: Float, new_y: Float)
+        + set_priority_from_load_type()
+    }
+
+    class GridEdge {
+        - id: UUID
+        - grid_id: UUID
+        - from_node_id: UUID
+        - to_node_id: UUID
+        - capacity_mw: Float
+        - resistance_ohm: Float
+        - losses_percent: Float
+        - priority: Integer
+        - state: EdgeState
+        - created_at: DateTime
+        - updated_at: DateTime
+        --
+        + set_priority(value: Integer)
+    }
+
+    Workspace "1" -- "0..*" Grid : owns >
+    Grid "1" -- "0..*" GridNode : contains >
+    Grid "1" -- "0..*" GridEdge : contains >
+}
+
+note right of GridNode
+  If type = PLANT:
+    - plant_type required
+    - capacity_mw required
+
+  If type = LOAD:
+    - load_type required
+    - demand_mw required
+
+  If type = SUBSTATION:
+    - no demand or capacity
+end note
+
+note right of GridNode
+  x,y are canvas coordinates
+  (logical layout space, not GPS)
+end note
+
+note right of GridEdge
+  state is persistent base-grid state
+  Scenarios override this temporarily
+end note
+@enduml

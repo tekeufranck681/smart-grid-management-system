@@ -1,0 +1,32 @@
+Delete Workspace
+Sequence Steps – Delete Workspace
+
+Actors / Components:
+
+User
+
+Frontend
+
+Workspace Service
+
+Database
+
+Flow:
+
+User confirms workspace deletion
+
+Frontend sends DELETE /workspaces/{id}
+
+Workspace Service:
+
+Authenticates user
+
+Validates ownership
+
+Workspace Service deletes workspace
+
+Database cascades delete (grids, nodes, edges)
+
+Workspace Service returns confirmation
+
+Frontend removes workspace from UI

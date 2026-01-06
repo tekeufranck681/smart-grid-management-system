@@ -1,0 +1,9 @@
+{
+  "name": "Broken Grid B",
+  "description": "No nodes present",
+  "base_power_mva": 10,
+  "voltage_level": 11,
+
+  "nodes": [],
+  "edges": []
+}

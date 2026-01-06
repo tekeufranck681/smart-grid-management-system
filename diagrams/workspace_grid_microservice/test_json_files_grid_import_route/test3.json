@@ -1,0 +1,27 @@
+{
+  "name": "Broken Grid A",
+  "base_power_mva": 40,
+  "voltage_level": 66,
+
+  "nodes": [
+    {
+      "client_id": "a1",
+      "name": "Wind Farm",
+      "type": "plant",
+      "plant_type": "wind",
+      "capacity_mw": 40,
+      "x": 1,
+      "y": 1
+    }
+  ],
+
+  "edges": [
+    {
+      "from_node_id": "a1",
+      "to_node_id": "a2",
+      "capacity_mw": 40,
+      "resistance": 0.02,
+      "losses_percent": 1.8
+    }
+  ]
+}

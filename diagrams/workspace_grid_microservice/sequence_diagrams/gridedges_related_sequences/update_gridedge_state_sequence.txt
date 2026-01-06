@@ -1,0 +1,39 @@
+GridEdge – Update Persistent State (Corrected)
+Sequence Steps – Update GridEdge State (Persistent Configuration)
+
+Actors / Components:
+
+User
+
+Frontend (Grid Editor UI)
+
+Workspace & Grid Management Service
+
+Database (GridEdge table)
+
+Purpose:
+Update the persistent operational state of a grid edge (line) as part of the base grid definition, not a scenario.
+
+Flow:
+
+User selects an edge on the grid canvas
+
+User changes the edge state (e.g. ACTIVE → DISABLED) via UI control
+
+Frontend sends PATCH /edges/{edge_id}/state
+
+Grid Service:
+
+Validates JWT
+
+Verifies user ownership of workspace/grid
+
+Validates state transition (allowed values only)
+
+Grid Service updates edge.state in database
+
+Database confirms update
+
+Grid Service returns updated edge
+
+Frontend updates visual representation (e.g. dashed or greyed line)

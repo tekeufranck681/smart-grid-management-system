@@ -1,0 +1,38 @@
+Load Grid (Topology + Layout)
+Sequence Steps – Load Grid Details
+
+Actors / Components:
+
+User
+
+Frontend
+
+Grid Service
+
+Database (Grid, Node, Edge tables)
+
+Flow:
+
+User selects a grid
+
+Frontend sends GET /grids/{grid_id}
+
+Grid Service:
+
+Authenticates user
+
+Authorizes grid access
+
+Grid Service fetches:
+
+Grid metadata
+
+Nodes
+
+Edges
+
+Database returns topology data
+
+Grid Service returns full grid definition
+
+Frontend renders grid with nodes & edges

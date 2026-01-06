@@ -1,0 +1,34 @@
+Create Grid inside a Workspace
+Sequence Steps – Create Grid
+
+Actors / Components:
+
+User
+
+Frontend (Web App / CLI)
+
+Workspace & Grid Management Service
+
+Database (Grid table)
+
+Flow:
+
+User selects a workspace and clicks “Create Grid”
+
+Frontend sends POST /workspaces/{workspace_id}/grids
+
+Grid Service:
+
+Validates JWT
+
+Verifies user owns or has access to workspace
+
+Validates grid metadata (name, type)
+
+Grid Service persists grid linked to workspace
+
+Database returns grid ID
+
+Grid Service returns grid details
+
+Frontend initializes empty grid canvas

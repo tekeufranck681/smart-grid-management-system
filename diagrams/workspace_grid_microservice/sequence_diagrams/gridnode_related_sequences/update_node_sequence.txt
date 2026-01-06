@@ -1,0 +1,39 @@
+Update GridNode Attributes
+
+(Capacity, load type, plant type, priority, etc.)
+
+Sequence Steps – Update GridNode
+
+Actors / Components:
+
+User
+
+Frontend
+
+Grid Service
+
+Database
+
+Flow:
+
+User selects a node
+
+User edits node properties in side panel
+
+Frontend sends PUT /nodes/{node_id}
+
+Grid Service:
+
+Authenticates user
+
+Validates node ownership via grid
+
+Validates updated attributes
+
+Grid Service updates node record
+
+Database confirms update
+
+Grid Service returns updated node
+
+Frontend refreshes node display

@@ -1,0 +1,32 @@
+Delete GridEdge
+Sequence Steps – Delete GridEdge
+
+Actors / Components:
+
+User
+
+Frontend
+
+Grid Service
+
+Database
+
+Flow:
+
+User selects edge and clicks delete
+
+Frontend sends DELETE /edges/{edge_id}
+
+Grid Service:
+
+Validates JWT
+
+Validates ownership
+
+Grid Service deletes edge
+
+Database confirms deletion
+
+Grid Service returns confirmation
+
+Frontend removes edge from canvas

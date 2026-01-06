@@ -1,0 +1,34 @@
+Update Workspace
+Sequence Steps – Update Workspace
+
+Actors / Components:
+
+User
+
+Frontend
+
+Workspace Service
+
+Database
+
+Flow:
+
+User edits workspace settings
+
+Frontend sends PUT /workspaces/{id}
+
+Workspace Service:
+
+Authenticates user
+
+Validates ownership
+
+Validates updated data
+
+Workspace Service updates workspace record
+
+Database confirms update
+
+Workspace Service returns updated workspace
+
+Frontend updates UI

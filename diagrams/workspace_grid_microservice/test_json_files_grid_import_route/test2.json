@@ -1,0 +1,54 @@
+{
+  "name": "Gamma Distribution Grid",
+  "description": "Urban distribution grid",
+  "base_power_mva": 75,
+  "voltage_level": 110,
+
+  "nodes": [
+    {
+      "client_id": "g1",
+      "name": "Hydro Plant",
+      "type": "plant",
+      "plant_type": "hydro",
+      "capacity_mw": 80,
+      "priority": 0,
+      "x": 5.5,
+      "y": -2.1
+    },
+    {
+      "client_id": "g2",
+      "name": "Main Substation",
+      "type": "substation",
+      "capacity_mw": 80,
+      "x": 20,
+      "y": 10
+    },
+    {
+      "client_id": "g3",
+      "name": "Industrial Load",
+      "type": "load",
+      "load_type": "factory",
+      "demand_mw": 40,
+      "priority": 1,
+      "x": 30,
+      "y": 12
+    }
+  ],
+
+  "edges": [
+    {
+      "from_node_id": "g1",
+      "to_node_id": "g2",
+      "capacity_mw": 80,
+      "resistance": 0.015,
+      "losses_percent": 1.1
+    },
+    {
+      "from_node_id": "g2",
+      "to_node_id": "g3",
+      "capacity_mw": 50,
+      "resistance": 0.03,
+      "losses_percent": 2.0
+    }
+  ]
+}

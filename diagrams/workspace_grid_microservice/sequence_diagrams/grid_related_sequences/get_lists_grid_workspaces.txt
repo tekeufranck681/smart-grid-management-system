@@ -1,0 +1,32 @@
+A Get Grid List for Workspace
+Sequence Steps – Get Grid List
+
+Actors / Components:
+
+User
+
+Frontend
+
+Grid Service
+
+Database
+
+Flow:
+
+User opens workspace
+
+Frontend sends GET /workspaces/{id}/grids
+
+Grid Service:
+
+Validates JWT
+
+Validates workspace access
+
+Grid Service queries grids for workspace
+
+Database returns grid list
+
+Grid Service returns grids
+
+Frontend displays available grids

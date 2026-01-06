@@ -1,0 +1,39 @@
+Move Node on Grid (Drag & Drop)
+
+⚠️ This is a critical real-time UX sequence
+
+Sequence Steps – Move GridNode
+
+Actors / Components:
+
+User
+
+Frontend (Canvas Drag Handler)
+
+Grid Service
+
+Database
+
+Flow:
+
+User clicks and drags node on canvas
+
+Frontend updates node position locally (optimistic UI)
+
+On drag end:
+
+Frontend sends PATCH /nodes/{node_id}/position
+
+Grid Service:
+
+Authenticates user
+
+Validates node ownership
+
+Grid Service updates (x, y) coordinates
+
+Database confirms update
+
+Grid Service returns success
+
+Frontend finalizes node position

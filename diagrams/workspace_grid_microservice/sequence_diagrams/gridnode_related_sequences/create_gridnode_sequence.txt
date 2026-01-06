@@ -1,0 +1,38 @@
+Add Node to Grid
+Sequence Steps – Add GridNode
+
+Actors / Components:
+
+User
+
+Frontend (Grid Canvas UI)
+
+Workspace & Grid Management Service
+
+Database (GridNode table)
+
+Flow:
+
+User selects “Add Node” and chooses node type (plant, load, substation)
+
+User clicks on grid canvas to place node
+
+Frontend calculates initial (x, y) canvas coordinates
+
+Frontend sends POST /grids/{grid_id}/nodes
+
+Grid Service:
+
+Validates JWT
+
+Validates grid access
+
+Validates node attributes (type, capacity, load type, priority)
+
+Grid Service persists node with position and properties
+
+Database returns node ID
+
+Grid Service returns created node
+
+Frontend renders node on canvas

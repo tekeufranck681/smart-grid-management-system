@@ -1,0 +1,32 @@
+Update Grid Metadata
+Sequence Steps – Update Grid
+
+Actors / Components:
+
+User
+
+Frontend
+
+Grid Service
+
+Database
+
+Flow:
+
+User edits grid settings (name, description)
+
+Frontend sends PUT /grids/{id}
+
+Grid Service:
+
+Validates JWT
+
+Validates grid ownership
+
+Grid Service updates grid record
+
+Database confirms update
+
+Grid Service returns updated grid
+
+Frontend refreshes grid info

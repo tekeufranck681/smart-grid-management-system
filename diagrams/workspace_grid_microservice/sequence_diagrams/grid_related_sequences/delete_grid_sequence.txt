@@ -1,0 +1,32 @@
+Delete Grid
+Sequence Steps – Delete Grid
+
+Actors / Components:
+
+User
+
+Frontend
+
+Grid Service
+
+Database
+
+Flow:
+
+User confirms grid deletion
+
+Frontend sends DELETE /grids/{id}
+
+Grid Service:
+
+Validates JWT
+
+Validates ownership
+
+Grid Service deletes grid
+
+Database cascades deletion (nodes, edges)
+
+Grid Service returns confirmation
+
+Frontend removes grid from workspace

@@ -1,0 +1,30 @@
+Get Workspace List
+Sequence Steps – Get Workspace List
+
+Actors / Components:
+
+User
+
+Frontend
+
+Workspace Service
+
+Database
+
+Flow:
+
+User navigates to dashboard
+
+Frontend sends GET /workspaces
+
+Workspace Service:
+
+Authenticates user
+
+Fetches workspaces owned or shared with user
+
+Database returns workspace list
+
+Workspace Service returns list to frontend
+
+Frontend renders workspace list

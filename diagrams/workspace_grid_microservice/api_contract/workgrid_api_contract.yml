@@ -1,0 +1,1408 @@
+openapi: 3.1.0
+info:
+  title: SGMS Workspace Grid Modelling Microservice API
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Welcome
+      description: Welcome message endpoint.
+      operationId: welcome__get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Welcome  Get
+  /api/v1/workspaces/:
+    get:
+      tags:
+        - Workspaces
+      summary: List Workspaces
+      operationId: list_workspaces_api_v1_workspaces__get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceListOut"
+    post:
+      tags:
+        - Workspaces
+      summary: Create Workspace
+      operationId: create_workspace_api_v1_workspaces__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkspaceCreate"
+        required: true
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/workspaces/{workspace_id}:
+    get:
+      tags:
+        - Workspaces
+      summary: Get Workspace
+      operationId: get_workspace_api_v1_workspaces__workspace_id__get
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Workspace Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceWithGridsOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    put:
+      tags:
+        - Workspaces
+      summary: Update Workspace
+      operationId: update_workspace_api_v1_workspaces__workspace_id__put
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Workspace Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkspaceUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Workspaces
+      summary: Delete Workspace
+      operationId: delete_workspace_api_v1_workspaces__workspace_id__delete
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Workspace Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/grids/workspaces/{workspace_id}/grids:
+    post:
+      tags:
+        - Grids
+      summary: Create Grid
+      operationId: create_grid_api_v1_grids_workspaces__workspace_id__grids_post
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Workspace Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GridCreate"
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    get:
+      tags:
+        - Grids
+      summary: List Grids For Workspace
+      operationId: list_grids_for_workspace_api_v1_grids_workspaces__workspace_id__grids_get
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Workspace Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridListOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/grids/{grid_id}:
+    get:
+      tags:
+        - Grids
+      summary: Get Grid
+      operationId: get_grid_api_v1_grids__grid_id__get
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridWithRelationsOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    put:
+      tags:
+        - Grids
+      summary: Update Grid
+      operationId: update_grid_api_v1_grids__grid_id__put
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GridUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Grids
+      summary: Delete Grid
+      operationId: delete_grid_api_v1_grids__grid_id__delete
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/grids/{grid_id}/nodes/:
+    post:
+      tags:
+        - Grid Nodes
+      summary: Create Grid Node
+      operationId: create_grid_node_api_v1_grids__grid_id__nodes__post
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GridNodeCreate"
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridNodeOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/grids/{grid_id}/nodes/{node_id}:
+    get:
+      tags:
+        - Grid Nodes
+      summary: Get Grid Node
+      operationId: get_grid_node_api_v1_grids__grid_id__nodes__node_id__get
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+        - name: node_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Node Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridNodeWithEdgesOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    put:
+      tags:
+        - Grid Nodes
+      summary: Update Grid Node
+      operationId: update_grid_node_api_v1_grids__grid_id__nodes__node_id__put
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+        - name: node_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Node Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GridNodeUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridNodeOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Grid Nodes
+      summary: Delete Grid Node
+      operationId: delete_grid_node_api_v1_grids__grid_id__nodes__node_id__delete
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+        - name: node_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Node Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/grids/{grid_id}/nodes/{node_id}/position:
+    patch:
+      tags:
+        - Grid Nodes
+      summary: Update Grid Node Position
+      operationId: update_grid_node_position_api_v1_grids__grid_id__nodes__node_id__position_patch
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+        - name: node_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Node Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GridNodePositionUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/grids/{grid_id}/edges/:
+    post:
+      tags:
+        - Grid Edges
+      summary: Create Grid Edge
+      operationId: create_grid_edge_api_v1_grids__grid_id__edges__post
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GridEdgeCreate"
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridEdgeOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/grids/{grid_id}/edges/{edge_id}:
+    get:
+      tags:
+        - Grid Edges
+      summary: Get Grid Edge
+      operationId: get_grid_edge_api_v1_grids__grid_id__edges__edge_id__get
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+        - name: edge_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Edge Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridEdgeOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    put:
+      tags:
+        - Grid Edges
+      summary: Update Grid Edge
+      operationId: update_grid_edge_api_v1_grids__grid_id__edges__edge_id__put
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+        - name: edge_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Edge Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GridEdgeUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridEdgeOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Grid Edges
+      summary: Delete Grid Edge
+      operationId: delete_grid_edge_api_v1_grids__grid_id__edges__edge_id__delete
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+        - name: edge_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Edge Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/grids/{grid_id}/edges/{edge_id}/state:
+    patch:
+      tags:
+        - Grid Edges
+      summary: Update Grid Edge State
+      operationId: update_grid_edge_state_api_v1_grids__grid_id__edges__edge_id__state_patch
+      parameters:
+        - name: grid_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Grid Id
+        - name: edge_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Edge Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GridEdgeStateUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GridEdgeOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/import/grids/{workspace_id}:
+    post:
+      tags:
+        - Grid Import
+      summary: Import Grid From File
+      operationId: import_grid_from_file_api_v1_import_grids__workspace_id__post
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Workspace Id
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/Body_import_grid_from_file_api_v1_import_grids__workspace_id__post"
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    Body_import_grid_from_file_api_v1_import_grids__workspace_id__post:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+      type: object
+      required:
+        - file
+      title: Body_import_grid_from_file_api_v1_import_grids__workspace_id__post
+    GridCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Description
+        base_power_mva:
+          type: number
+          title: Base Power Mva
+        voltage_level:
+          type: number
+          title: Voltage Level
+        is_active:
+          type: boolean
+          title: Is Active
+          default: true
+      type: object
+      required:
+        - name
+        - base_power_mva
+        - voltage_level
+      title: GridCreate
+    GridEdgeCreate:
+      properties:
+        from_node_id:
+          type: string
+          format: uuid
+          title: From Node Id
+        to_node_id:
+          type: string
+          format: uuid
+          title: To Node Id
+        capacity_mw:
+          type: number
+          title: Capacity Mw
+        resistance:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Resistance
+        losses_percent:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Losses Percent
+        priority:
+          type: integer
+          title: Priority
+          default: 0
+        status:
+          $ref: "#/components/schemas/GridEdgeStatus"
+          default: active
+      type: object
+      required:
+        - from_node_id
+        - to_node_id
+        - capacity_mw
+      title: GridEdgeCreate
+    GridEdgeOut:
+      properties:
+        from_node_id:
+          type: string
+          format: uuid
+          title: From Node Id
+        to_node_id:
+          type: string
+          format: uuid
+          title: To Node Id
+        capacity_mw:
+          type: number
+          title: Capacity Mw
+        resistance:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Resistance
+        losses_percent:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Losses Percent
+        priority:
+          type: integer
+          title: Priority
+          default: 0
+        status:
+          $ref: "#/components/schemas/GridEdgeStatus"
+          default: active
+        id:
+          type: string
+          format: uuid
+          title: Id
+        grid_id:
+          type: string
+          format: uuid
+          title: Grid Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: "null"
+          title: Updated At
+      type: object
+      required:
+        - from_node_id
+        - to_node_id
+        - capacity_mw
+        - id
+        - grid_id
+        - created_at
+      title: GridEdgeOut
+    GridEdgeStateUpdate:
+      properties:
+        status:
+          $ref: "#/components/schemas/GridEdgeStatus"
+      type: object
+      required:
+        - status
+      title: GridEdgeStateUpdate
+    GridEdgeStatus:
+      type: string
+      enum:
+        - active
+        - disabled
+        - failed
+      title: GridEdgeStatus
+    GridEdgeUpdate:
+      properties:
+        capacity_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Capacity Mw
+        resistance:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Resistance
+        losses_percent:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Losses Percent
+        priority:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Priority
+        status:
+          anyOf:
+            - $ref: "#/components/schemas/GridEdgeStatus"
+            - type: "null"
+      type: object
+      title: GridEdgeUpdate
+    GridListOut:
+      properties:
+        grids:
+          items:
+            $ref: "#/components/schemas/GridOut"
+          type: array
+          title: Grids
+      type: object
+      required:
+        - grids
+      title: GridListOut
+    GridNodeCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        type:
+          $ref: "#/components/schemas/GridNodeType"
+        plant_type:
+          anyOf:
+            - $ref: "#/components/schemas/PlantType"
+            - type: "null"
+        load_type:
+          anyOf:
+            - $ref: "#/components/schemas/LoadType"
+            - type: "null"
+        demand_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Demand Mw
+        capacity_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Capacity Mw
+        priority:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Priority
+        x:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: X
+        y:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Y
+      type: object
+      required:
+        - name
+        - type
+      title: GridNodeCreate
+    GridNodeOut:
+      properties:
+        name:
+          type: string
+          title: Name
+        type:
+          $ref: "#/components/schemas/GridNodeType"
+        plant_type:
+          anyOf:
+            - $ref: "#/components/schemas/PlantType"
+            - type: "null"
+        load_type:
+          anyOf:
+            - $ref: "#/components/schemas/LoadType"
+            - type: "null"
+        demand_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Demand Mw
+        capacity_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Capacity Mw
+        priority:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Priority
+        x:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: X
+        y:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Y
+        id:
+          type: string
+          format: uuid
+          title: Id
+        grid_id:
+          type: string
+          format: uuid
+          title: Grid Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: "null"
+          title: Updated At
+      type: object
+      required:
+        - name
+        - type
+        - id
+        - grid_id
+        - created_at
+      title: GridNodeOut
+    GridNodePositionUpdate:
+      properties:
+        x:
+          type: number
+          title: X
+        y:
+          type: number
+          title: Y
+      type: object
+      required:
+        - x
+        - y
+      title: GridNodePositionUpdate
+    GridNodeType:
+      type: string
+      enum:
+        - plant
+        - load
+        - substation
+      title: GridNodeType
+    GridNodeUpdate:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Name
+        plant_type:
+          anyOf:
+            - $ref: "#/components/schemas/PlantType"
+            - type: "null"
+        load_type:
+          anyOf:
+            - $ref: "#/components/schemas/LoadType"
+            - type: "null"
+        demand_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Demand Mw
+        capacity_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Capacity Mw
+        priority:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Priority
+      type: object
+      title: GridNodeUpdate
+    GridNodeWithEdgesOut:
+      properties:
+        name:
+          type: string
+          title: Name
+        type:
+          $ref: "#/components/schemas/GridNodeType"
+        plant_type:
+          anyOf:
+            - $ref: "#/components/schemas/PlantType"
+            - type: "null"
+        load_type:
+          anyOf:
+            - $ref: "#/components/schemas/LoadType"
+            - type: "null"
+        demand_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Demand Mw
+        capacity_mw:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Capacity Mw
+        priority:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Priority
+        x:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: X
+        y:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Y
+        id:
+          type: string
+          format: uuid
+          title: Id
+        grid_id:
+          type: string
+          format: uuid
+          title: Grid Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: "null"
+          title: Updated At
+        outgoing_edges:
+          items:
+            $ref: "#/components/schemas/GridEdgeOut"
+          type: array
+          title: Outgoing Edges
+        incoming_edges:
+          items:
+            $ref: "#/components/schemas/GridEdgeOut"
+          type: array
+          title: Incoming Edges
+      type: object
+      required:
+        - name
+        - type
+        - id
+        - grid_id
+        - created_at
+      title: GridNodeWithEdgesOut
+    GridOut:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Description
+        base_power_mva:
+          type: number
+          title: Base Power Mva
+        voltage_level:
+          type: number
+          title: Voltage Level
+        is_active:
+          type: boolean
+          title: Is Active
+          default: true
+        id:
+          type: string
+          format: uuid
+          title: Id
+        workspace_id:
+          type: string
+          format: uuid
+          title: Workspace Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: "null"
+          title: Updated At
+      type: object
+      required:
+        - name
+        - base_power_mva
+        - voltage_level
+        - id
+        - workspace_id
+        - created_at
+      title: GridOut
+    GridUpdate:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Description
+        base_power_mva:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Base Power Mva
+        voltage_level:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Voltage Level
+        is_active:
+          anyOf:
+            - type: boolean
+            - type: "null"
+          title: Is Active
+      type: object
+      title: GridUpdate
+    GridWithRelationsOut:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Description
+        base_power_mva:
+          type: number
+          title: Base Power Mva
+        voltage_level:
+          type: number
+          title: Voltage Level
+        is_active:
+          type: boolean
+          title: Is Active
+          default: true
+        id:
+          type: string
+          format: uuid
+          title: Id
+        workspace_id:
+          type: string
+          format: uuid
+          title: Workspace Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: "null"
+          title: Updated At
+        nodes:
+          items:
+            $ref: "#/components/schemas/GridNodeOut"
+          type: array
+          title: Nodes
+        edges:
+          items:
+            $ref: "#/components/schemas/GridEdgeOut"
+          type: array
+          title: Edges
+      type: object
+      required:
+        - name
+        - base_power_mva
+        - voltage_level
+        - id
+        - workspace_id
+        - created_at
+      title: GridWithRelationsOut
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LoadType:
+      type: string
+      enum:
+        - hospital
+        - enterprise
+        - residential
+        - industrial
+      title: LoadType
+    PlantType:
+      type: string
+      enum:
+        - hydro
+        - solar
+        - thermal
+      title: PlantType
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+    WorkspaceCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Description
+        visibility:
+          $ref: "#/components/schemas/WorkspaceVisibility"
+          default: private
+      type: object
+      required:
+        - name
+      title: WorkspaceCreate
+    WorkspaceListOut:
+      properties:
+        workspaces:
+          items:
+            $ref: "#/components/schemas/WorkspaceOut"
+          type: array
+          title: Workspaces
+      type: object
+      required:
+        - workspaces
+      title: WorkspaceListOut
+    WorkspaceOut:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Description
+        owner_id:
+          type: string
+          format: uuid
+          title: Owner Id
+        visibility:
+          $ref: "#/components/schemas/WorkspaceVisibility"
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: "null"
+          title: Updated At
+      type: object
+      required:
+        - id
+        - name
+        - owner_id
+        - visibility
+        - created_at
+      title: WorkspaceOut
+    WorkspaceUpdate:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Description
+        visibility:
+          anyOf:
+            - $ref: "#/components/schemas/WorkspaceVisibility"
+            - type: "null"
+      type: object
+      required:
+        - name
+      title: WorkspaceUpdate
+    WorkspaceVisibility:
+      type: string
+      enum:
+        - private
+        - shared
+      title: WorkspaceVisibility
+    WorkspaceWithGridsOut:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Description
+        owner_id:
+          type: string
+          format: uuid
+          title: Owner Id
+        visibility:
+          $ref: "#/components/schemas/WorkspaceVisibility"
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: "null"
+          title: Updated At
+        grids:
+          items:
+            $ref: "#/components/schemas/GridOut"
+          type: array
+          title: Grids
+          default: []
+      type: object
+      required:
+        - id
+        - name
+        - owner_id
+        - visibility
+        - created_at
+      title: WorkspaceWithGridsOut

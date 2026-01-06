@@ -1,0 +1,37 @@
+{
+  "name": "Beta Grid",
+  "description": "Simple valid grid",
+  "base_power_mva": 20,
+  "voltage_level": 33,
+  "is_active": true,
+
+  "nodes": [
+    {
+      "client_id": "n1",
+      "name": "Solar Plant",
+      "type": "plant",
+      "plant_type": "solar",
+      "capacity_mw": 20,
+      "x": 10,
+      "y": 5
+    },
+    {
+      "client_id": "n2",
+      "name": "City Substation",
+      "type": "substation",
+      "capacity_mw": 20,
+      "x": 15,
+      "y": 8
+    }
+  ],
+
+  "edges": [
+    {
+      "from_node_id": "n1",
+      "to_node_id": "n2",
+      "capacity_mw": 20,
+      "resistance": 0.02,
+      "losses_percent": 1.5
+    }
+  ]
+}
