@@ -325,7 +325,24 @@ cd frontend
 npm install
 ```
 
-#### 7.3 Run the development server
+#### 7.3 Setup Environment Variables
+
+##### 7.3.1 Copy the example environment file
+```bash
+cp .env.example .env       # Linux / MacOS
+# Windows PowerShell
+Copy-Item .env.example .env
+```
+
+##### 7.3.2 Populate the .env with values
+```bash
+Example .env:
+
+NEXT_PUBLIC_BACKEND_URL=http://auth.localhost/api/v1
+```
+
+#### 7.4 Run the development server
+
 ```bash
 npm run dev
 ```
