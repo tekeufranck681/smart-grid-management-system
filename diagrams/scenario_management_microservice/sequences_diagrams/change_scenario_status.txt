@@ -1,0 +1,67 @@
+Change Scenario Status
+
+Workflow
+
+Change Scenario Status (Lifecycle Transition)
+Actors / Components:
+
+User
+
+Frontend (Scenario Settings / Toolbar UI)
+
+Scenario Management Service
+
+Database (Scenario table)
+
+Flow:
+
+User initiates status change
+
+User clicks “Lock Scenario” or “Archive Scenario” in the UI.
+
+Frontend validates intent
+
+Frontend checks current scenario status (e.g. only allow DRAFT → LOCKED).
+
+Frontend disables illegal transitions in UI.
+
+Frontend sends status update request
+
+PATCH /scenarios/{id}/status
+
+Payload:
+
+{
+  "status": "LOCKED"
+}
+
+
+Scenario Management Service receives request
+
+Validates scenario exists.
+
+Validates current status.
+
+Validates allowed transition (state machine).
+
+Scenario Service updates scenario
+
+Updates scenario.status
+
+Persists change in Scenario table.
+
+Database confirms transaction
+
+Commit succeeds.
+
+Scenario Service responds
+
+Returns updated scenario status.
+
+Frontend updates UI
+
+Scenario becomes read-only.
+
+Event creation/editing is disabled.
+
+Status badge updates visually.

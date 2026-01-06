@@ -1,0 +1,26 @@
+View Scenario (Read-Only Topology)
+Workflow
+
+View Scenario Topology
+
+Actors / Components:
+
+User
+
+Frontend (Scenario Canvas UI)
+
+Scenario Management Service
+
+Database (Scenario, Snapshot tables)
+
+Flow:
+
+User opens scenario
+
+Frontend sends GET /scenarios/{id}
+
+Scenario Service fetches scenario and snapshot
+
+Scenario Service returns snapshot data
+
+Frontend renders grid (read-only)

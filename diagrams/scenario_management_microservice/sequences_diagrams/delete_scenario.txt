@@ -1,0 +1,36 @@
+Delete Scenario
+Workflow
+
+Delete Scenario
+
+Actors / Components:
+
+User
+
+Frontend
+
+Scenario Management Service
+
+Database
+
+Flow:
+
+User selects delete scenario
+
+Frontend sends DELETE /scenarios/{id}
+
+Scenario Service:
+
+Validates JWT
+
+Validates ownership
+
+Deletes events
+
+Deletes snapshot
+
+Deletes scenario
+
+Scenario Service confirms deletion
+
+Frontend updates scenario list

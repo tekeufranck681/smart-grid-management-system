@@ -1,0 +1,30 @@
+List Scenarios by Grid
+Workflow – List Scenarios for a Grid
+
+Actors / Components:
+
+User
+
+Frontend (Scenario tab / Grid tab)
+
+Scenario Management Service
+
+Database (Scenario table)
+
+Flow:
+
+User opens Grid tab and clicks “Scenario List” or navigates to Scenario tab for a particular grid.
+
+Frontend sends GET /scenarios?grid_id={gridId}.
+
+Scenario Service:
+
+Validates JWT / user permissions
+
+Queries Scenario table filtering by workspace_id / grid_id
+
+Returns a list of scenarios with basic metadata (id, name, status, created_at)
+
+Frontend displays Scenario list in tab (sortable / clickable)
+
+User can select a scenario to view details (triggers View Scenario workflow).

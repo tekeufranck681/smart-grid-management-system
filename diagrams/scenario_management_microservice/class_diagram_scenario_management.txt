@@ -1,0 +1,82 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =======================
+' ENTITIES (DB TABLES)
+' =======================
+
+class Scenario {
+  +id: UUID
+  +name: String
+  +workspace_id: UUID
+  +base_grid_id: UUID
+  +status: ScenarioStatus
+  +created_by: UUID
+  +created_at: DateTime
+
+  +lock(): void
+}
+
+class ScenarioGridSnapshot {
+  +id: UUID
+  +scenario_id: UUID
+  +nodes: JSON
+  +edges: JSON
+  +metadata: JSON
+  +created_at: DateTime
+
+  +isImmutable(): Boolean
+}
+
+class ScenarioEvent {
+  +id: UUID
+  +scenario_id: UUID
+  +event_type: EventType
+  +target_type: TargetType
+  +target_id: UUID
+  +parameters: JSON
+  +start_time: Int
+  +duration: Int
+  +created_at: DateTime
+
+  +validate(): Boolean
+}
+
+' =======================
+' SERVICES (BUSINESS LOGIC)
+' =======================
+
+class ScenarioService {
+  +createScenarioFromGrid(gridId, name): Scenario
+  +addEvent(scenarioId, eventData): ScenarioEvent
+  +getScenario(scenarioId): Scenario
+  +listScenariosByGrid(gridId): List<Scenario>
+  +deleteScenario(scenarioId): void
+}
+
+class GridClient {
+  +fetchGrid(gridId): GridDTO
+}
+
+' =======================
+' RELATIONSHIPS
+' =======================
+
+Scenario "1" -- "1" ScenarioGridSnapshot
+Scenario "1" -- "0..*" ScenarioEvent
+
+ScenarioService --> Scenario
+ScenarioService --> ScenarioGridSnapshot
+ScenarioService --> ScenarioEvent
+ScenarioService --> GridClient
+
+@enduml
+
+
+# enum for scenarios events
+class EventType(Enum):
+    LOAD_CHANGE = "LOAD_CHANGE"          # Demand fluctuation at a node
+    LINE_OUTAGE = "LINE_OUTAGE"          # Transmission line failure
+    GENERATION_CHANGE = "GENERATION_CHANGE" # Generator/hydro/solar variation
+    LOAD_SHEDDING = "LOAD_SHEDDING"      # Controlled power cut
+    ISLANDING = "ISLANDING"              # Micro-grid separation

@@ -1,0 +1,48 @@
+Create Scenario (Snapshot Grid + Initial Event)
+Workflow
+
+Create Scenario
+
+Actors / Components:
+
+User
+
+Frontend (Grid UI)
+
+Scenario Management Service
+
+Grid Management Service
+
+Database (Scenario, Snapshot, Event tables)
+
+Flow:
+
+User clicks Create Scenario in Grid tab
+
+Frontend collects:
+
+Scenario name
+
+Initial event parameters
+
+Frontend sends POST /scenarios
+
+Scenario Service:
+
+Validates JWT
+
+Validates grid access
+
+Requests grid data from Grid Service
+
+Creates Scenario record
+
+Creates immutable Grid Snapshot
+
+Validates event
+
+Persists ScenarioEvent
+
+Scenario Service returns created scenario
+
+Frontend redirects to Scenario tab

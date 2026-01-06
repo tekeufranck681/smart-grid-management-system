@@ -1,0 +1,36 @@
+Add Scenario Event
+Workflow
+
+Add Event to Existing Scenario
+
+Actors / Components:
+
+User
+
+Frontend (Scenario UI)
+
+Scenario Management Service
+
+Database (ScenarioEvent table)
+
+Flow:
+
+User selects scenario
+
+User configures event parameters
+
+Frontend sends POST /scenarios/{id}/events
+
+Scenario Service:
+
+Validates JWT
+
+Validates scenario is not locked
+
+Validates event target exists in snapshot
+
+Persists event
+
+Scenario Service returns event
+
+Frontend updates scenario view
