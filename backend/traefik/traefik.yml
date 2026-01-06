@@ -1,0 +1,151 @@
+#####################################################################
+# TRAEFIK STATIC CONFIGURATION FILE
+# This file controls HOW Traefik runs (ports, TLS, providers, logs)
+#####################################################################
+
+# ------------------------------------------------
+# GLOBAL SETTINGS
+# ------------------------------------------------
+global:
+  checkNewVersion: false          # Disable version check (noise-free logs)
+  sendAnonymousUsage: false       # Privacy + compliance (always false)
+
+
+# ------------------------------------------------
+# TRAEFIK API & DASHBOARD
+# ------------------------------------------------
+api:
+  dashboard: true                # Enables web UI dashboard
+  insecure: true                 # DEV ONLY, exposes dashboard without auth
+
+  # 🔐 PROD:
+  # insecure: false
+  # Expose dashboard via router + auth middleware only
+
+
+# ------------------------------------------------
+# ENTRY POINTS (Ports Traefik listens on)
+# ------------------------------------------------
+entryPoints:
+
+  # ---------------- HTTP ----------------
+  web:
+    address: ":80"               # Listens on port 80
+
+    # 🔁 PROD: HTTP → HTTPS redirect
+    # http:
+    #   redirections:
+    #     entryPoint:
+    #       to: websecure
+    #       scheme: https
+    #       permanent: true      # 301 redirect (SEO-safe)
+
+
+  # ---------------- HTTPS ----------------
+  websecure:
+    address: ":443"              # Listens on port 443 (TLS)
+
+
+# ------------------------------------------------
+# PROVIDERS (Dynamic configuration sources)
+# ------------------------------------------------
+providers:
+
+  # ---------------- DOCKER PROVIDER ----------------
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    watch: true                  # Auto-detect container changes
+    exposedByDefault: false      # SECURITY: containers must opt-in
+
+    # WHY:
+    # Prevents accidentally exposing internal containers
+
+
+# ------------------------------------------------
+# LOGGING
+# ------------------------------------------------
+log:
+  level: DEBUG                   # DEV: DEBUG | PROD: INFO or WARN
+  format: common
+
+  # WHY:
+  # DEBUG helps troubleshooting
+  # PROD logs must be quieter & cheaper
+
+
+# ------------------------------------------------
+# ACCESS LOGS (HTTP traffic)
+# ------------------------------------------------
+accessLog:
+  format: common
+
+  fields:
+    defaultMode: keep
+
+    headers:
+      defaultMode: drop          # Do NOT log headers by default (security)
+      names:
+        User-Agent: keep         # Useful debugging info
+        Authorization: drop      # 🔐 NEVER log auth headers
+
+
+# ------------------------------------------------
+# PROMETHEUS METRICS
+# ------------------------------------------------
+metrics:
+  prometheus:
+    entryPoint: web              # Metrics exposed on port 80
+    addEntryPointsLabels: true
+    addServicesLabels: true
+    addRoutersLabels: true
+
+    # 🔐 PROD:
+    # Expose metrics on internal network only
+    # Or protect with firewall / auth middleware
+
+
+# ------------------------------------------------
+# TLS & HTTPS SECURITY
+# ------------------------------------------------
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12   # Disables weak TLS versions
+      sniStrict: true            # Prevents unknown domains
+
+      cipherSuites:
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+      # WHY:
+      # Enforces modern cryptography
+      # Required for compliance (SOC2, ISO, PCI)
+
+
+# ------------------------------------------------
+# LET'S ENCRYPT (ACME)
+# ------------------------------------------------
+certificatesResolvers:
+
+  letsencrypt:
+    acme:
+      email: tekeufranck681@gmail.com    # REQUIRED (expiry notifications)
+      storage: /etc/traefik/acme/acme.json
+
+      # ---------------- HTTP CHALLENGE ----------------
+      httpChallenge:
+        entryPoint: web
+
+      # WHY:
+      # Automatic certificate issuance & renewal
+      # No manual cert management
+
+      # 🔐 PROD NOTES:
+      # - acme.json MUST be chmod 600
+      # - Use real email
+      # - Works only with public DNS domains
+
+
+#####################################################################
+# END OF STATIC CONFIG
+#####################################################################
