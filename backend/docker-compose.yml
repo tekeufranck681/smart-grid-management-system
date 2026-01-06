@@ -1,0 +1,195 @@
+version: "3.9"
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  auth_pg_data:
+  auth_redis_data:
+  grid_pg_data:
+  grid_redis_data:
+  scenario_pg_data:
+  scenario_redis_data:
+  prometheus_data:
+  grafana_data:
+
+services:
+
+  # ------------------------- TRAEFIK -------------------------
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--configFile=/etc/traefik/traefik.yml"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/acme:/etc/traefik/acme"
+      - "./traefik/traefik.yml:/etc/traefik/traefik.yml:ro"
+    networks:
+      - backend
+
+   # ------------------------- AUTH (FastAPI) -------------------------
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    container_name: sgms-auth
+    restart: unless-stopped
+    env_file:
+      - ./auth/.env.development  # or production .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`auth.localhost`)"
+      - "traefik.http.routers.auth.entrypoints=web"
+    depends_on:
+      - auth-db
+      - auth-redis
+    networks:
+      - backend
+
+  workspace-grid:
+    build:
+      context: ./workspace_grid
+      dockerfile: Dockerfile
+    container_name: sgms-workspace-grid
+    restart: unless-stopped
+    env_file:
+      - ./workspace_grid/.env.development  # or production .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grid.rule=Host(`grid.localhost`)"
+      - "traefik.http.routers.grid.entrypoints=web"
+    depends_on:
+      - grid-db
+      - grid-redis
+    networks:
+      - backend
+
+  scenario-management:
+    build:
+      context: ./scenario_management
+      dockerfile: Dockerfile
+    container_name: sgms-scenario-management
+    restart: unless-stopped
+    env_file:
+      - ./scenario_management/.env.development  # or production .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scenario.rule=Host(`scenario.localhost`)"
+      - "traefik.http.routers.scenario.entrypoints=web"
+    depends_on:
+      - scenario-db
+      - scenario-redis
+    networks:
+      - backend
+
+    # ------------------------- POSTGRES -------------------------
+  auth-db:
+    image: postgres:16
+    container_name: auth-postgres
+    environment:
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: ubuntu1234.  # replace with secrets in prod
+      POSTGRES_DB: auth_db
+    volumes:
+      - auth_pg_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  grid-db:
+    image: postgres:16
+    container_name: grid-postgres
+    environment:
+      POSTGRES_USER: grid_user
+      POSTGRES_PASSWORD: ubuntu1234.  # replace with secrets in prod
+      POSTGRES_DB: grid_db
+    volumes:
+      - grid_pg_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+
+  scenario-db:
+    image: postgres:16
+    container_name: scenario-postgres
+    environment:
+      POSTGRES_USER: scenario_user
+      POSTGRES_PASSWORD: ubuntu1234.  # replace with secrets in prod
+      POSTGRES_DB: scenario_db
+    volumes:
+      - scenario_pg_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+    # ------------------------- REDIS -------------------------
+  auth-redis:
+    image: redis:latest
+    container_name: auth-redis
+    restart: unless-stopped
+    volumes:
+      - auth_redis_data:/data
+    networks:
+      - backend
+
+  grid-redis:
+    image: redis:latest
+    container_name: grid-redis
+    restart: unless-stopped
+    volumes:
+      - grid_redis_data:/data
+    networks:
+      - backend
+
+  scenario-redis:
+    image: redis:latest
+    container_name: scenario-redis
+    restart: unless-stopped
+    volumes:
+      - scenario_redis_data:/data
+    networks:
+      - backend
+
+    # ------------------------- PROMETHEUS -------------------------
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./data/prometheus:/etc/prometheus  # config files
+      - prometheus_data:/prometheus              # persistent data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.localhost`)"
+      - "traefik.http.routers.prometheus.entrypoints=web"
+    networks:
+      - backend
+
+    # ------------------------- GRAFANA -------------------------
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.localhost`)"
+      - "traefik.http.routers.grafana.entrypoints=web"
+    networks:
+      - backend
+
+    # ------------------------- NODE-EXPORTER -------------------------
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    networks:
+      - backend
