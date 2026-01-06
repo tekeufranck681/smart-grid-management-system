@@ -1,0 +1,26 @@
+[1] Workspace Management (Persistence Layer)
+    - Workspace
+    - Grid definition
+    - Nodes & edges stored in DB
+
+            ↓
+
+[2] Scenario Management (Configuration Layer)
+    - Scenario selected or created
+    - Scenario rules loaded (JSON / DB)
+    - Still NO computation
+
+            ↓  (User clicks "Simulate")
+
+[3] Simulation Engine (Runtime Layer)
+    ├─ Build GridGraph (DATA STRUCTURES)
+    ├─ Apply Scenario (grid mutations)
+    ├─ Run Algorithms
+    └─ Produce Results
+
+            ↓
+
+[4] Results (Output Layer)
+    - Metrics
+    - Visualizations
+    - Optional persistence
