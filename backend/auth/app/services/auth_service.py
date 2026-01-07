@@ -83,7 +83,7 @@ class AuthService:
 
         stmt = select(EmailVerificationToken).where(
             EmailVerificationToken.token_hash == token_hash,
-            not EmailVerificationToken.used,
+            EmailVerificationToken.used.is_(False),
         )
         result = await db.execute(stmt)
         token_row = result.scalar_one_or_none()
@@ -119,7 +119,7 @@ class AuthService:
             update(EmailVerificationToken)
             .where(
                 EmailVerificationToken.user_id == user.id,
-                not EmailVerificationToken.used,
+                EmailVerificationToken.used.is_(False),
             )
             .values(used=True)
         )
@@ -201,7 +201,7 @@ class AuthService:
         token_hash = hash_token(refresh_token)
 
         stmt = select(RefreshToken).where(
-            RefreshToken.token_hash == token_hash, not RefreshToken.revoked
+            RefreshToken.token_hash == token_hash, RefreshToken.revoked.is_(False)
         )
         result = await db.execute(stmt)
         token_row = result.scalar_one_or_none()
@@ -316,7 +316,7 @@ class AuthService:
         stmt = select(RefreshToken).where(
             RefreshToken.token_hash == token_hash,
             RefreshToken.user_id == user_id,
-            not RefreshToken.revoked,
+            RefreshToken.revoked.is_(False),
         )
         result = await db.execute(stmt)
         stored_token = result.scalar_one_or_none()
