@@ -66,17 +66,19 @@ async def verify_email(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,  # required in production (HTTPS)
-        samesite="None",  # allows cross-site requests
+        secure=False,  # change in production (HTTPS)
+        samesite="lax",  # allows cross-site requests
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
     )
     response.set_cookie(
         key="refresh_token",
         value=raw_refresh,
         httponly=True,
-        secure=True,
-        samesite="None",
+        secure=False,  # change in production (HTTPS)
+        samesite="lax",
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+        path="/",
     )
 
     metrics.count("auth.account_verification.success", 1)
@@ -125,17 +127,19 @@ async def login(payload: UserRequest, db: AsyncSession = Depends(get_db)):
         key="access_token",
         value=response_data["data"]["access_token"],
         httponly=True,
-        secure=True,
-        samesite="None",
+        secure=False,  # change in production (HTTPS)
+        samesite="lax",
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
     )
     response.set_cookie(
         key="refresh_token",
         value=response_data["data"]["refresh_token"],
         httponly=True,
-        secure=True,
-        samesite="None",
+        secure=False,  # change in production (HTTPS)
+        samesite="lax",
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+        path="/",
     )
 
     return response
@@ -159,9 +163,10 @@ async def refresh_token(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,
-        samesite="None",
+        secure=False,  # change in production (HTTPS)
+        samesite="lax",
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
     )
 
     return {
