@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useAuthStore } from "../stores/authStore";
 
-const AUTH_BASE_URL = `${process.env.NEXT_PUBLIC_AUTH_URL}/auth`;
+const WORKSPACE_BASE_URL = `${process.env.NEXT_PUBLIC_WORKSPACEGRID_URL}/workspaces`;
 
 const api = axios.create({
-  baseURL: AUTH_BASE_URL,
+  baseURL: WORKSPACE_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -17,15 +17,13 @@ let refreshPromise = null;
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const { logout, refreshToken, isAuthenticated } = useAuthStore.getState();
+    const { logout, refreshToken, isAuthenticated } =
+      useAuthStore.getState();
     const status = error.response?.status;
 
     if (status === 401 && isAuthenticated) {
-      const isLoginEndpoint = error.config?.url?.includes("/login");
-      const isLogoutEndpoint = error.config?.url?.includes("/logout");
       const isRefreshEndpoint = error.config?.url?.includes("/refresh-token");
-      const isValidateEndpoint = error.config?.url?.includes("/verify-token");
-      if (!isLoginEndpoint && !isLogoutEndpoint && !isRefreshEndpoint && !isValidateEndpoint) {
+      if (!isRefreshEndpoint) {
         if (!isRefreshing) {
           isRefreshing = true;
           refreshPromise = refreshToken().finally(() => {

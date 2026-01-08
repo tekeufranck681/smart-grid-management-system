@@ -1,14 +1,12 @@
 import axios from "axios";
 import { useAuthStore } from "../stores/authStore";
 
-const AUTH_BASE_URL = `${process.env.NEXT_PUBLIC_AUTH_URL}/auth`;
+const SCENARIO_BASE_URL = `${process.env.NEXT_PUBLIC_SCENARIO_URL}/scenarios`;
 
 const api = axios.create({
-  baseURL: AUTH_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true, // send cookies automatically
+  baseURL: SCENARIO_BASE_URL,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 let isRefreshing = false;
@@ -21,11 +19,8 @@ api.interceptors.response.use(
     const status = error.response?.status;
 
     if (status === 401 && isAuthenticated) {
-      const isLoginEndpoint = error.config?.url?.includes("/login");
-      const isLogoutEndpoint = error.config?.url?.includes("/logout");
       const isRefreshEndpoint = error.config?.url?.includes("/refresh-token");
-      const isValidateEndpoint = error.config?.url?.includes("/verify-token");
-      if (!isLoginEndpoint && !isLogoutEndpoint && !isRefreshEndpoint && !isValidateEndpoint) {
+      if (!isRefreshEndpoint) {
         if (!isRefreshing) {
           isRefreshing = true;
           refreshPromise = refreshToken().finally(() => {
