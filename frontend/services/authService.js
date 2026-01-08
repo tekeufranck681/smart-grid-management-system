@@ -1,4 +1,3 @@
-// src/services/authService.js
 import api from "../config/axioxConfigAuth";
 
 const normalizeError = (error, fallbackMessage) => {
