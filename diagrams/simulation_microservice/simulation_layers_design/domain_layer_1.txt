@@ -1,0 +1,155 @@
+DOMAIN LAYER — FINALIZED (OPTION A)
+
+Principle
+Everything that participates in the grid is a Node.
+There is no separate “Node vs Plant / Load / Substation” abstraction.
+
+CORE DOMAIN ENTITIES (LOCKED)
+
+1.1 Grid
+Top-level container.
+
+Identity
+
+id (UUID)
+
+Inherent attributes
+
+name
+
+description
+
+base_power_mva
+
+voltage_level
+
+1.2 Node
+Represents any grid point.
+
+Identity
+
+id (UUID)
+
+Type (hard enum)
+
+PLANT
+
+LOAD
+
+SUBSTATION
+
+No other node types are allowed.
+
+1.3 Edge
+Represents a physical connection between nodes.
+
+Identity
+
+id (UUID)
+
+Connectivity
+
+from_node_id
+
+to_node_id
+
+NODE-TYPE–SPECIFIC ATTRIBUTES (ALLOWED)
+
+Type-conditional fields are explicitly accepted.
+
+Plant Node
+
+plant_type
+
+capacity_mw
+
+priority
+
+Load Node
+
+load_type
+
+demand_mw
+
+priority
+
+Substation Node
+
+capacity_mw
+
+Rule
+Fields irrelevant to the node type must be null or absent.
+
+EDGE ATTRIBUTES
+
+Inherent attributes
+
+from_node_id
+
+to_node_id
+
+resistance_ohm
+
+State-related attributes (allowed due to simulation dependency)
+
+capacity_mw
+
+losses_percent
+
+priority
+
+status
+
+RELATIONSHIP RULES (LOCKED)
+
+An Edge must always connect exactly two Nodes
+
+A Node may exist without Edges
+
+A Grid contains Nodes and Edges
+
+There are no standalone Plants, Loads, or Substations
+
+Everything is modeled as a Node
+
+DIRECTIONALITY (LOCKED)
+
+Edges are directional
+
+Direction represents modeling reference only
+
+Direction does not enforce actual power flow
+
+Actual power flow direction is computed later
+
+UNITS (LOCKED)
+
+Power: MW
+
+Base power: MVA
+
+Voltage: kV
+
+Resistance: Ohm
+
+Losses: Percentage (%)
+
+No exceptions.
+
+DOMAIN BOUNDARIES (LOCKED)
+
+The domain layer does NOT contain:
+
+Events
+
+Simulation logic
+
+Time
+
+Forecasting
+
+Optimization
+
+Validation rules beyond invariants
+
+The domain layer only defines what exists and how it connects.

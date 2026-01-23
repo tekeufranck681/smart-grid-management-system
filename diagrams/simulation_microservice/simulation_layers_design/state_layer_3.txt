@@ -1,0 +1,42 @@
+LAYER 3 — STATE LAYER LOCKED (FINAL)
+State characteristics
+
+Time-dependent
+
+Immutable
+
+Snapshot-based
+
+Scenario-owned
+
+Derived from topology + previous state + events
+
+State contains
+
+Node demand & generation
+
+Node voltage
+
+Edge flow
+
+Edge operational status
+
+Available capacity
+
+State explicitly allows
+
+Invalid configurations
+
+Violations
+
+Stress conditions
+
+State explicitly avoids
+
+Structural changes
+
+Topology mutation
+
+Event logic
+
+Decision-making

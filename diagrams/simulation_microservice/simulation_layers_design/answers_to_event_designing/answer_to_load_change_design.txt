@@ -1,0 +1,161 @@
+Event: LOAD_CHANGE
+Q1. Which layer(s) does this event touch?
+
+Answer
+
+State layer only
+
+Reasoning
+
+Load value changes over time.
+
+No topology or domain structure change.
+
+🔒 Locked
+
+Q2. What is the minimal direct mutation caused by this event?
+
+Answer
+
+Update demand_mw of the target node
+
+Reasoning
+
+Event expresses demand fluctuation at a node.
+
+Nothing else is directly modified.
+
+🔒 Locked
+
+Q3. What invariants must remain true immediately after this mutation?
+
+Answer
+
+demand_mw ≥ 0
+
+demand_mw ≤ node.max_demand_mw (if defined)
+
+Node identity and type unchanged
+
+Topology untouched
+
+Reasoning
+
+Demand cannot be negative.
+
+Domain consistency must hold before simulation.
+
+🔒 Locked
+
+Q4. What consequences must be derived from this mutation?
+
+Answer
+
+Power imbalance (excess or deficit)
+
+Flow redistribution
+
+Line overloads
+
+Voltage deviations
+
+Possible load shedding (if demand increases)
+
+Possible generation curtailment (if demand decreases)
+
+Reasoning
+
+These are system responses, not event intent.
+
+🔒 Locked
+
+Q5. What structural or topological queries are required?
+
+Answer
+
+Which generators can supply this load?
+
+What paths exist between supply and demand?
+
+Which island contains this node?
+
+Reasoning
+
+Load impact depends on reachability.
+
+No connectivity recomputation needed.
+
+🔒 Locked
+
+Q6. What prioritization, ordering, or selection rules are required?
+
+Answer
+
+Order of load shedding (priority-based)
+
+Order of generation dispatch or curtailment
+
+Reasoning
+
+Not all loads are equally important.
+
+Generation sources may have priority (renewables vs thermal).
+
+🔒 Locked
+
+Q7. Which data structures are therefore required?
+
+Answer
+
+Graph → power flow paths
+
+Priority Queue → load shedding / dispatch decisions
+
+(Union-Find not required)
+
+Reasoning
+
+Topology is queried, not modified.
+
+🔒 Locked
+
+Q8. What is the termination condition for processing this event?
+
+Answer
+Processing stops when:
+
+Power balance is restored OR
+
+No further controllable actions exist
+
+Reasoning
+
+Ensures deterministic completion.
+
+🔒 Locked
+
+Q9. What outputs must be produced and stored?
+
+Answer
+
+New state snapshot
+
+Flow changes
+
+Load shed (if any)
+
+Generation curtailed (if any)
+
+Violations encountered
+
+Event reference
+
+Reasoning
+
+Required for replay, rollback, and metrics.
+
+🔒 Locked
+
+✅ LOAD_CHANGE — Questions Fully Answered
+
+Everything is now fixed and consistent with previous events.

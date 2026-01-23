@@ -1,0 +1,32 @@
+LAYER 4 — EVENT LAYER LOCKED (FINAL)
+Event characteristics
+
+Immutable
+
+Ordered
+
+Append-only
+
+Replayable
+
+Time-bound
+
+Event responsibilities
+
+Explain why state changed
+
+Declare direct facts
+
+Target entities by ID
+
+Event explicitly does NOT
+
+Inspect topology
+
+Read state
+
+Compute outcomes
+
+Validate constraints
+
+Events are pure historical facts.

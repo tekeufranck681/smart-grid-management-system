@@ -1,0 +1,41 @@
+LAYER 2 — TOPOLOGY LOCKED (FINAL)
+
+Topology characteristics
+
+Directed graph (logical)
+
+Undirected traversal allowed
+
+Nodes + Edges only
+
+No parallel edges
+
+Fully in-memory
+
+Physically defined connections only
+
+Topology responsibilities
+
+Neighbor lookup
+
+Graph traversal
+
+Connected components
+
+Path existence
+
+Topology explicitly ignores
+
+Line status
+
+Load values
+
+Generation
+
+Voltage constraints
+
+Time
+
+Events
+
+Topology is now pure structure.

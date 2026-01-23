@@ -1,0 +1,181 @@
+Event: LINE_OUTAGE
+Q1. Which layer(s) does this event touch?
+
+Answer
+
+Topology (connectivity may change)
+
+State (edge operational status)
+
+Reasoning
+
+A line outage removes a connection possibility.
+
+Topology structure stays the same, but effective connectivity changes.
+
+Domain entities do not change.
+
+🔒 Locked
+
+Q2. What is the minimal direct mutation caused by this event?
+
+Answer
+
+Set edge.status = DOWN in the state snapshot
+
+Reasoning
+
+The event describes a fact: the line is unavailable.
+
+No rerouting, no islanding, no shedding here.
+
+🔒 Locked
+
+Q3. What invariants must remain true immediately after this mutation?
+
+Answer
+
+Edge still references valid from_node_id and to_node_id
+
+No other edges or nodes are modified
+
+Topology structure is unchanged
+
+State snapshot remains internally consistent
+
+Reasoning
+
+An outage does not delete the edge.
+
+Events cannot violate domain integrity.
+
+🔒 Locked
+
+Q4. What consequences must be derived from this mutation?
+
+Answer
+
+Connectivity changes (possible grid split)
+
+Power flow redistribution
+
+Line overloads on remaining paths
+
+Voltage or capacity violations
+
+Island creation (if disconnection occurs)
+
+Possible need for load shedding
+
+Reasoning
+
+These are effects, not part of the event itself.
+
+They belong to the simulation layer.
+
+🔒 Locked
+
+Q5. What structural or topological queries are required?
+
+Answer
+
+Are all nodes still connected?
+
+What connected components now exist?
+
+Which nodes belong to which island?
+
+What alternative paths exist between supply and demand?
+
+Reasoning
+
+These are reachability and component queries.
+
+Direction may be ignored for connectivity detection only.
+
+🔒 Locked
+
+Q6. What prioritization, ordering, or selection rules are required?
+
+Answer
+
+Which overloaded line to resolve first
+
+Which load to shed first (priority-based)
+
+Which generation to curtail or ramp
+
+Reasoning
+
+When constraints are violated, decisions must be ordered.
+
+This is domain-driven (priority, critical loads).
+
+🔒 Locked
+
+Q7. Which data structures are therefore required?
+
+Answer
+
+Graph → represent grid structure
+
+Union-Find → detect islands after outage
+
+Priority Queue → resolve overloads / load shedding
+
+(Segment Tree: not required directly for this event)
+
+Reasoning
+
+Structures follow directly from Q5 and Q6.
+
+🔒 Locked
+
+Q8. What is the termination condition for processing this event?
+
+Answer
+Processing stops when:
+
+All flows are within limits OR
+
+No further corrective actions are possible (full load shed / isolated island)
+
+Reasoning
+
+Prevents infinite corrective loops.
+
+Ensures deterministic completion.
+
+🔒 Locked
+
+Q9. What outputs must be produced and stored?
+
+Answer
+
+New state snapshot
+
+List of islands (if any)
+
+Violations encountered
+
+Load shed amount (if any)
+
+Reference to triggering event
+
+Reasoning
+
+Required for replay, rollback, and metrics analysis.
+
+🔒 Locked
+
+✅ LINE_OUTAGE — Fully Designed (Conceptually)
+
+At this point:
+
+No ambiguity remains
+
+Data structures are justified
+
+Algorithm boundaries are clear
+
+Implementation can proceed mechanically

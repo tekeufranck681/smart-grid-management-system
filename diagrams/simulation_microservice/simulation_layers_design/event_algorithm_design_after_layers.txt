@@ -1,0 +1,23 @@
+Event Algorithm Design — Canonical Question List
+
+Q1. Which layer(s) does this event touch?
+(Domain, Topology, State)
+
+Q2. What is the minimal direct mutation caused by this event?
+(Only what the event explicitly changes)
+
+Q3. What invariants must remain true immediately after this mutation?
+(Domain and simulation constraints)
+
+Q4. What consequences must be derived from this mutation?
+(Not declared by the event itself)
+
+Q5. What structural or topological queries are required to compute those consequences?
+
+Q6. What prioritization, ordering, or selection rules are required during processing?
+
+Q7. Which data structures are therefore required to support those operations efficiently?
+
+Q8. What is the termination condition for processing this event?
+
+Q9. What outputs must be produced and stored after processing this event?

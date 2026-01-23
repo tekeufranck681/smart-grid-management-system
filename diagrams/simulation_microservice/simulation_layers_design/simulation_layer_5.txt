@@ -1,0 +1,36 @@
+LAYER 5 — SIMULATION LAYER LOCKED (FINAL)
+Simulation characteristics
+
+Deterministic
+
+Stateless (derives state, doesn’t store logic)
+
+Purely functional over inputs
+
+No randomness
+
+Inputs
+
+Topology
+
+Initial State
+
+Ordered Events
+
+Simulation parameters
+
+Outputs
+
+Full state trajectory
+
+Violation reports
+
+Derived metrics
+
+Violation handling
+
+Detected, not prevented
+
+Recorded, not hidden
+
+Configurable stopping behavior
