@@ -1,0 +1,123 @@
+Pseudo-Algorithm — TIME_BASED_GENERATION_SURGE (12 PM)
+Inputs
+
+prev_state
+Immutable snapshot of the grid state just before 12 PM
+
+event
+TIME_BASED_GENERATION_SURGE(node_id, surged_generation_mw, time=12:00)
+
+topology
+Immutable graph structure (nodes, lines, capacities)
+
+Outputs
+
+next_state
+
+derived_artifacts
+
+violations (line overloads, unserved load)
+
+load_shed
+
+generation_curtailed
+
+metrics (per-phase imbalance, flows)
+
+Step 0 — Initialize
+next_state ← deep copy of prev_state
+violations ← empty list
+metrics ← empty structure
+
+Step 1 — Apply time-based surge mutation (event layer)
+node ← next_state.nodes[node_id]
+node.generation_mw ← surged_generation_mw
+
+
+Interpretation
+This mutation represents a time-triggered availability change
+(e.g. solar production increase at 12 PM).
+No scheduler is used; time is encoded in event semantics.
+
+Step 2 — Validate immediate invariants (domain)
+if node.generation_mw < 0:
+    raise INVALID_EVENT
+
+if node.max_capacity_mw is defined and
+   node.generation_mw > node.max_capacity_mw:
+    node.generation_mw ← node.max_capacity_mw
+
+Step 3 — Identify affected island
+island ← find_connected_component(node_id, topology, next_state)
+
+
+Topology remains unchanged
+
+Only the electrically connected subgraph reacts to the surge
+
+Step 4 — Recompute power balance for the island (t₁)
+total_generation ← sum(generation_mw of generators in island)
+total_demand ← sum(demand_mw of loads in island)
+
+
+Store:
+
+metrics.power_balance ← total_generation − total_demand
+
+Step 5 — Recompute power flows
+flows ← compute_power_flow(island, topology, next_state)
+
+for each line in flows:
+    if line.flow_mw > line.capacity_mw:
+        record violation: LINE_OVERLOAD
+
+Step 6 — Resolve imbalance or violations (priority-based, t₂)
+Case A — Generation surplus (typical at 12 PM solar surge)
+if total_generation > total_demand:
+    curtail generation using generator priority rules
+
+Case B — Generation deficit (possible due to congestion)
+if total_generation < total_demand:
+    while total_generation < total_demand and shedable_loads exist:
+        load ← pop lowest-priority load
+        shed load
+        update total_demand
+
+Step 7 — Update state after corrective actions
+apply generation curtailment and/or load shedding to next_state
+recompute flows
+
+
+Record:
+
+metrics.final_balance
+metrics.final_flows
+
+Step 8 — Termination condition
+if power balance restored OR no further corrective actions possible:
+    stop processing
+
+Step 9 — Finalize outputs
+
+Store:
+
+next_state snapshot
+
+flow changes
+
+load_shed_amount
+
+generation_curtailed
+
+violations
+
+event reference = TIME_BASED_GENERATION_SURGE(12 PM)
+
+Properties (verified)
+
+✔ Deterministic
+✔ Stateless engine
+✔ Replayable
+✔ Layer-compliant
+✔ Symmetric with LOAD_CHANGE
+✔ Time-aware without scheduler

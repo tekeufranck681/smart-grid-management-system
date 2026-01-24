@@ -1,0 +1,80 @@
+Pseudo-Algorithm — GENERATION_CHANGE
+
+Inputs
+
+prev_state (immutable state snapshot)
+
+event = GENERATION_CHANGE(node_id, new_generation_mw)
+
+topology (graph structure, immutable)
+
+Outputs
+
+next_state
+
+derived_artifacts (violations, load_shed, curtailment, metrics)
+
+Step 0 — Initialize
+next_state ← deep copy of prev_state
+violations ← empty list
+
+Step 1 — Apply direct mutation (event layer)
+node ← next_state.nodes[node_id]
+node.generation_mw ← new_generation_mw
+
+Step 2 — Validate immediate invariants (domain)
+if node.generation_mw < 0:
+    raise INVALID_EVENT
+
+if node.generation_mw > node.max_capacity_mw:
+    node.generation_mw ← node.max_capacity_mw
+
+Step 3 — Identify affected island
+island ← find_connected_component(node_id, topology, next_state)
+
+
+(Topology unchanged; connectivity queried only)
+
+Step 4 — Recompute power balance for the island
+total_generation ← sum(generation_mw of nodes in island)
+total_demand ← sum(demand_mw of nodes in island)
+
+Step 5 — Recompute power flows
+flows ← compute_power_flow(island, topology, next_state)
+
+for each line in flows:
+    if line.flow_mw > line.capacity_mw:
+        record violation: LINE_OVERLOAD
+
+Step 6 — Resolve imbalance or violations (priority-based)
+if total_generation < total_demand:
+    while total_generation < total_demand and shedable_loads exist:
+        load ← pop lowest-priority load from PriorityQueue
+        shed load
+        update total_demand
+
+if total_generation > total_demand:
+    curtail generation using priority rules
+
+Step 7 — Update state after corrective actions
+apply load shedding and/or curtailment to next_state
+recompute flows and voltages
+
+Step 8 — Termination condition
+if power balance restored OR no further actions possible:
+    stop processing
+
+Step 9 — Finalize outputs
+store:
+- next_state snapshot
+- flow changes
+- load_shed_amount
+- generation_curtailed
+- violations
+- event reference
+
+Properties (verified)
+
+✔ Deterministic
+✔ Stateless engine
+✔ Replayable

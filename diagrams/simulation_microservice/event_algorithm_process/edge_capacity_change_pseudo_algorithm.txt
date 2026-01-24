@@ -1,0 +1,126 @@
+Pseudo-Algorithm — EDGE_CAPACITY_CHANGE
+Inputs
+
+prev_state (immutable state snapshot)
+
+event = EDGE_CAPACITY_CHANGE(edge_id, new_capacity_mw)
+
+topology (graph structure, immutable)
+
+Outputs
+
+next_state
+
+derived_artifacts
+(islands, violations, corrective actions, metrics)
+
+Step 0 — Initialize
+next_state ← deep copy of prev_state
+violations ← empty list
+affected_islands ← empty list
+
+Step 1 — Apply Direct Mutation (Event Layer)
+edge ← next_state.edges[edge_id]
+
+edge.original_capacity_mw ← edge.capacity_mw   (if not already stored)
+edge.capacity_mw ← new_capacity_mw
+
+
+✔ Only capacity is modified
+✔ Edge remains ACTIVE
+✔ No redistribution yet
+✔ No topology change
+
+Step 2 — Recompute Effective Flow Constraints
+active_edges ← all edges where status == ACTIVE
+capacity_graph ← build graph using active_edges and their updated capacities
+
+
+✔ Connectivity preserved
+✔ Flow feasibility may change
+
+Step 3 — Detect Affected Islands (Constraint Propagation)
+UF ← initialize Union-Find with all nodes
+
+for each edge in active_edges:
+    UF.union(edge.from_node, edge.to_node)
+
+components ← UF.connected_components()
+
+for each component in components:
+    if component contains the changed edge:
+        affected_islands.add(component)
+
+
+✔ Islands are logical flow regions
+✔ Typically one island, but generalized
+
+Step 4 — Redistribute Power Within Each Island
+for each island in affected_islands:
+    redistribute_power_after_edge_capacity_change(dag, island)
+    record unmet demand as redistribution_violations
+
+
+✔ Priority-based redistribution
+✔ Edge, substation, and plant capacities enforced
+✔ No load shedding here
+
+Step 5 — Apply Corrective Measures
+if redistribution_violations exist:
+    corrective_report ← apply_load_shedding(
+        dag=next_state,
+        affected_island=island,
+        load_remaining=unserved_loads
+    )
+
+
+Possible corrective actions:
+
+• Load shedding (priority-based)
+• Partial curtailment of low-priority loads
+
+⚠ No island blackout unless generation is fully blocked
+
+Step 6 — Re-run Redistribution After Corrective Actions
+for each island in affected_islands:
+    redistribute_power_after_edge_capacity_change(dag, island)
+
+
+✔ Validate new feasible flows
+✔ Re-evaluate unmet demand
+
+Step 7 — Update State After Corrective Actions
+apply load shedding to next_state
+update flows and derived metrics
+
+
+✔ Final state is internally consistent
+✔ All constraints respected
+
+Step 8 — Termination Condition
+if no redistribution_violations remain
+OR no more loads can be shed:
+    stop processing
+
+Step 9 — Finalize Outputs
+
+Store:
+
+next_state snapshot
+
+affected_islands
+
+violations
+
+corrective_report
+
+event reference
+
+Properties (Validated)
+
+✔ Deterministic
+✔ Stateless engine
+✔ Replayable
+✔ Priority-based redistribution
+✔ Capacity-aware corrective measures
+✔ Topology-preserving event

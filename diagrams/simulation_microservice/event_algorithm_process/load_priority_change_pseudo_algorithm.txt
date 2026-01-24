@@ -1,0 +1,112 @@
+Pseudo-Algorithm — LOAD_PRIORITY_CHANGE
+Inputs
+
+prev_state (immutable state snapshot)
+
+event = LOAD_PRIORITY_CHANGE(node_id, new_priority)
+
+topology (graph structure, immutable)
+
+Outputs
+
+next_state
+
+derived_artifacts
+
+violations
+
+load_shed
+
+curtailment
+
+redistribution_metrics
+
+Step 0 — Initialize
+next_state ← deep copy of prev_state
+violations ← empty list
+load_shed ← empty list
+curtailment ← empty list
+
+Step 1 — Apply direct mutation (event layer)
+node ← next_state.nodes[node_id]
+node.priority ← new_priority
+
+
+✔ Only priority metadata is changed
+✔ No topology, capacity, or demand mutation
+
+Step 2 — Validate immediate invariants (domain)
+if node.priority < 0:
+    raise INVALID_EVENT
+
+
+(Optional domain rule)
+
+if node.priority > MAX_PRIORITY:
+    node.priority ← MAX_PRIORITY
+
+Step 3 — Identify affected island
+island ← find_connected_component(node_id, topology, next_state)
+
+
+* Topology unchanged
+* Island is used to scope redistribution impact
+
+Step 4 — Recompute power balance for the island
+total_generation ← sum(capacity_mw of PLANT nodes in island)
+total_demand ← sum(demand_mw of LOAD nodes in island)
+
+
+⚠️ Priority change does not alter totals, only allocation order
+
+Step 5 — Recompute power redistribution (priority-based)
+flows ← redistribute_power(island, topology, next_state)
+
+
+Loads are sorted by updated priority
+
+Higher-priority loads are served first
+
+Lower-priority loads may become partially or fully unsupplied
+
+for each line in flows:
+    if line.flow_mw > line.capacity_mw:
+        record violation: LINE_OVERLOAD
+
+Step 6 — Resolve imbalance or violations (corrective actions)
+if total_generation < total_demand:
+    while imbalance exists and shedable_loads exist:
+        load ← pop lowest-priority load
+        shed load
+        record load_shed
+
+if total_generation > total_demand:
+    curtail generation using priority rules
+
+
+📌 Load shedding is conditional, not guaranteed
+📌 Triggered only if redistribution cannot stabilize the grid
+
+Step 7 — Update state after corrective actions
+apply load_shedding and/or curtailment to next_state
+recompute flows
+
+Step 8 — Termination condition
+if grid is stable OR no further actions possible:
+    stop processing
+
+Step 9 — Finalize outputs
+
+Store:
+
+updated next_state
+
+redistribution results
+
+load_shed details
+
+curtailment details
+
+violations
+
+event metadata

@@ -1,0 +1,96 @@
+Pseudo-Algorithm — EDGE_OUTAGE
+
+Inputs
+
+prev_state (immutable state snapshot)
+
+event = EDGE_OUTAGE(edge_id)
+
+topology (graph structure, immutable)
+
+Outputs
+
+next_state
+
+derived_artifacts (islands, violations, corrective actions, metrics)
+
+Step 0 — Initialize
+next_state ← deep copy of prev_state
+violations ← empty list
+affected_islands ← empty list
+
+Step 1 — Apply Direct Mutation (Event Layer)
+edge ← next_state.edges[edge_id]
+edge.status ← DISABLED
+
+
+✔ Only direct effect
+✔ No redistribution or corrective measures yet
+
+Step 2 — Recompute Effective Connectivity
+active_edges ← all edges where status == ACTIVE
+connectivity_graph ← build graph using active_edges
+
+Step 3 — Detect Islands (Union-Find)
+UF ← initialize Union-Find with all nodes
+
+for each edge in active_edges:
+    UF.union(edge.from_node, edge.to_node)
+
+components ← UF.connected_components()
+
+if number_of(components) > 1:
+    affected_islands ← components
+
+Step 4 — Redistribute Power Within Each Island
+for each island in affected_islands:
+    redistribute_power(dag, island)
+    record any unmet demand as redistribution_violations
+
+
+✔ Priority-based redistribution
+✔ Respect edge, substation, and plant capacities
+
+Step 5 — Apply Corrective Measures
+if redistribution_violations exist:
+    corrective_report ← apply_corrective_measures_after_edge_outage(
+        dag=next_state,
+        affected_islands=affected_islands,
+        load_remaining=remaining_unserved_loads
+    )
+
+
+Island blackout if no generator exists
+
+Load shedding for partially supplied loads
+
+Step 6 — Re-run Redistribution After Corrective Actions
+for each island in affected_islands:
+    redistribute_power(dag, island)
+
+
+✔ Ensure final flows respect capacities
+✔ Recompute unmet demand
+
+Step 7 — Update State After Corrective Actions
+apply load shedding to next_state
+update flows and voltages
+
+Step 8 — Termination Condition
+if no redistribution_violations remain OR no more loads can be shed:
+    stop processing
+
+Step 9 — Finalize Outputs
+store:
+- next_state snapshot
+- affected_islands
+- violations
+- corrective_report
+- event reference
+
+Properties (Validated)
+
+✔ Deterministic
+✔ Stateless engine
+✔ Replayable
+✔ Priority-based redistribution and corrective measures

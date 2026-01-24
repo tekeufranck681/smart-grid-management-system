@@ -1,0 +1,121 @@
+Pseudo-Algorithm — SUBSTATION_CAPACITY_CHANGE
+Inputs
+
+prev_state (immutable state snapshot)
+
+event = SUBSTATION_CAPACITY_CHANGE(substation_id, new_capacity_mw)
+
+topology (graph structure, immutable)
+
+Outputs
+
+next_state
+
+derived_artifacts
+(violations, load_shed, curtailment, metrics)
+
+Step 0 — Initialize
+next_state ← deep copy of prev_state
+violations ← empty list
+load_shed ← empty list
+curtailment ← empty list
+metrics ← empty map
+
+Step 1 — Apply direct mutation (event layer)
+substation ← next_state.nodes[substation_id]
+substation.capacity_mw ← new_capacity_mw
+
+
+✔ Only the substation attribute is mutated
+✔ No redistribution or corrective action here
+
+Step 2 — Validate immediate invariants (domain)
+if substation.capacity_mw < 0:
+    raise INVALID_EVENT
+
+if substation.max_capacity_mw is defined
+   and substation.capacity_mw > substation.max_capacity_mw:
+       substation.capacity_mw ← substation.max_capacity_mw
+
+
+✔ Ensures physical feasibility
+✔ No power-flow logic yet
+
+Step 3 — Identify affected island
+island ← find_connected_component(substation_id, topology, next_state)
+
+
+Topology is not modified
+
+Connectivity is queried only
+
+Step 4 — Recompute island power balance (logical)
+total_generation ← sum(generation_mw of PLANT nodes in island)
+total_demand ← sum(demand_mw of LOAD nodes in island)
+total_substation_capacity ← sum(capacity_mw of SUBSTATION nodes in island)
+
+
+✔ Substations act as throughput constraints, not sources
+
+Step 5 — Recompute power flows
+flows ← compute_power_flow(island, topology, next_state)
+
+for each line in flows:
+    if line.flow_mw > line.capacity_mw:
+        record violation: LINE_OVERLOAD
+
+for each substation in island:
+    if throughput_mw > substation.capacity_mw:
+        record violation: SUBSTATION_OVERLOAD
+
+Step 6 — Resolve violations (priority-based)
+Case A — Substation bottleneck limits delivery
+while violations exist and shedable_loads exist:
+    load ← pop lowest-priority load from PriorityQueue
+    shed load
+    update total_demand
+
+Case B — Excess generation trapped upstream
+if total_generation > total_demand:
+    curtail generation using priority rules
+
+
+✔ Load shedding only affects downstream loads
+✔ Generation curtailment only if necessary
+
+Step 7 — Update state after corrective actions
+apply load shedding and/or curtailment to next_state
+recompute flows and throughput
+update metrics
+
+Step 8 — Termination condition
+if no violations remain
+   OR no further corrective actions possible:
+       stop processing
+
+Step 9 — Finalize outputs
+
+Store:
+
+next_state snapshot
+
+violations
+
+load_shed (per load, MW)
+
+generation_curtailed (per plant, MW)
+
+flow changes
+
+event reference
+
+stability metrics
+
+Properties (verified)
+
+✔ Deterministic
+✔ Stateless engine
+✔ Replayable
+✔ Layer-compliant
+✔ Symmetric with LOAD_CHANGE and GENERATION_CAPACITY_CHANGE
+✔ Substation treated as capacity constraint, not source
