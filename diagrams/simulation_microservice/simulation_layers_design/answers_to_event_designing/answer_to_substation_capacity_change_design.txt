@@ -1,0 +1,165 @@
+Event: SUBSTATION_CAPACITY_CHANGE
+
+Q1. Which layer(s) does this event touch?
+
+Answer
+
+State (substation capacity)
+
+Reasoning
+
+The event directly modifies the capacity of a substation in the state snapshot.
+
+Topology (nodes/edges connectivity) does not change, only the throughput available at that node.
+
+Domain entities remain the same; only a numerical property is updated.
+
+🔒 Locked
+
+Q2. What is the minimal direct mutation caused by this event?
+
+Answer
+
+Set substation.capacity_mw = new_capacity_mw in the state snapshot
+
+Reasoning
+
+The event describes a capacity change, which is a direct property update.
+
+No redistribution, shedding, or recalculation occurs in this minimal mutation step.
+
+🔒 Locked
+
+Q3. What invariants must remain true immediately after this mutation?
+
+Answer
+
+Substation node exists and references valid edges
+
+Substation capacity is non-negative
+
+Other nodes and edges remain unchanged
+
+DAG structure is consistent
+
+Reasoning
+
+The mutation should not break domain integrity.
+
+No new nodes/edges are added or removed.
+
+🔒 Locked
+
+Q4. What consequences must be derived from this mutation?
+
+Answer
+
+Power flow redistribution for all downstream loads
+
+Possible violations if downstream demand exceeds new capacity
+
+Load shedding may be needed
+
+Updated metrics: substation utilization, unmet demand, curtailment
+
+Reasoning
+
+These are simulation consequences, not part of the mutation itself.
+
+Derived artifacts depend on how the reduced or increased capacity affects the affected island.
+
+🔒 Locked
+
+Q5. What structural or topological queries are required?
+
+Answer
+
+Which loads are downstream of the changed substation?
+
+Which nodes belong to the affected island connected through this substation?
+
+Alternative paths from upstream generation to downstream loads (if multiple substations exist)
+
+Reasoning
+
+These queries ensure that redistribution only affects the relevant portion of the grid.
+
+🔒 Locked
+
+Q6. What prioritization, ordering, or selection rules are required?
+
+Answer
+
+Priority order for loads to shed if capacity is insufficient (lowest priority first)
+
+Priority order for redistributing generation to meet highest priority loads first
+
+Reasoning
+
+Helps resolve imbalances systematically and ensures critical loads are preserved.
+
+🔒 Locked
+
+Q7. Which data structures are therefore required?
+
+Answer
+
+Graph → represent grid structure
+
+Union-Find → detect islands / connected components if redistribution splits the network
+
+Priority Queue → select loads for shedding based on priority
+
+Dictionaries → track remaining substation capacity, edge capacity, plant generation, and load demand
+
+Reasoning
+
+These structures directly support redistribution, load shedding, and feasibility checking.
+
+🔒 Locked
+
+Q8. What is the termination condition for processing this event?
+
+Answer
+
+Stop when:
+
+All downstream flows respect substation, edge, and plant limits OR
+
+No further corrective actions are possible (all shedable loads exhausted)
+
+Reasoning
+
+Ensures deterministic completion
+
+Prevents infinite loops during redistribution and shedding
+
+🔒 Locked
+
+Q9. What outputs must be produced and stored?
+
+Answer
+
+Updated state snapshot (with new substation capacity)
+
+List of affected nodes / island
+
+Violations encountered (unserved loads, capacity limits exceeded)
+
+Load shedding applied (amount, priority, load IDs)
+
+Metrics: utilization, curtailment
+
+Reference to triggering event
+
+Reasoning
+
+Essential for replay, rollback, auditing, and metrics computation
+
+🔒 Locked
+
+✅ SUBSTATION_CAPACITY_CHANGE — Fully Designed (Conceptually)
+
+Direct mutation is simple, but the derived consequences require redistribution and corrective actions.
+
+Data structures and algorithmic flow are clear, deterministic, and replayable.

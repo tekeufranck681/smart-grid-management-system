@@ -1,0 +1,168 @@
+Event: LOAD_PRIORITY_CHANGE
+
+Q1. Which layer(s) does this event touch?
+
+Answer
+
+State (node priority metadata)
+
+Reasoning
+
+The event only updates a node’s priority attribute.
+
+Topology (connectivity, edges) is unchanged.
+
+Domain entities (capacity, demand) are unchanged.
+
+🔒 Locked
+
+Q2. What is the minimal direct mutation caused by this event?
+
+Answer
+
+Set node.priority = new_priority in the state snapshot
+
+Reasoning
+
+Only the priority value changes.
+
+No rerouting, shedding, or redistribution occurs in this step.
+
+🔒 Locked
+
+Q3. What invariants must remain true immediately after this mutation?
+
+Answer
+
+Node still references valid id and type.
+
+Priority is within domain bounds (e.g., ≥ 0, ≤ MAX_PRIORITY).
+
+Topology structure is unchanged.
+
+State snapshot remains internally consistent.
+
+Reasoning
+
+Priority change does not remove or alter nodes/edges.
+
+Domain integrity must hold.
+
+🔒 Locked
+
+Q4. What consequences must be derived from this mutation?
+
+Answer
+
+Redistribution order may change (higher-priority loads served first).
+
+Lower-priority loads may become partially or fully unsupplied.
+
+Load shedding or curtailment may be triggered if power is insufficient.
+
+Reasoning
+
+These are effects observed during redistribution, not part of the mutation itself.
+
+The simulation layer handles these consequences.
+
+🔒 Locked
+
+Q5. What structural or topological queries are required?
+
+Answer
+
+Identify affected island: find_connected_component(node_id, topology)
+
+Determine load nodes in the island
+
+Check available generation vs. total demand
+
+Reasoning
+
+Even though topology is unchanged, the affected island scopes redistribution.
+
+Queries are reachability-based.
+
+🔒 Locked
+
+Q6. What prioritization, ordering, or selection rules are required?
+
+Answer
+
+Redistribute power according to updated load priority
+
+Shed lower-priority loads first if supply is insufficient
+
+Curtail generation only if necessary
+
+Reasoning
+
+Event’s purpose is to adjust priority order, affecting redistribution decisions.
+
+Priority rules drive deterministic corrective actions.
+
+🔒 Locked
+
+Q7. Which data structures are therefore required?
+
+Answer
+
+Graph → represent grid structure
+
+Priority Queue → order loads by updated priority during redistribution
+
+Dictionaries → track remaining capacity per plant, substation, edge, and load
+
+Reasoning
+
+Structures support reachability, redistribution, and priority-based selection.
+
+🔒 Locked
+
+Q8. What is the termination condition for processing this event?
+
+Answer
+Processing stops when:
+
+All flows and demands are within limits or
+
+No further corrective actions are possible (full load shed or isolated island)
+
+Reasoning
+
+Ensures deterministic completion and prevents infinite loops.
+
+🔒 Locked
+
+Q9. What outputs must be produced and stored?
+
+Answer
+
+Updated state snapshot
+
+Redistribution metrics (load served per node)
+
+Load shedding report (if any)
+
+Curtailment report (if any)
+
+Violations encountered
+
+Reference to triggering event
+
+Reasoning
+
+Necessary for replay, audit, and simulation metrics.
+
+🔒 Locked
+
+✅ LOAD_PRIORITY_CHANGE — Fully Designed (Conceptually)
+
+Deterministic and stateless
+
+Only mutates priority metadata
+
+Reuses the same redistribution engine as LOAD_CHANGE
+
+Data structures and algorithm boundaries are clearly defined

@@ -1,0 +1,176 @@
+Event: EDGE_CAPACITY_CHANGE
+
+Q1. Which layer(s) does this event touch?
+
+Answer
+
+State (edge capacity)
+
+Reasoning
+
+The topology structure does not change — all nodes and edges remain present.
+
+Only the capacity attribute of the edge is mutated, which affects flow calculations.
+
+Connectivity remains the same; only the feasible flow along that edge may change.
+
+🔒 Locked
+
+Q2. What is the minimal direct mutation caused by this event?
+
+Answer
+
+Set edge.capacity_mw = new_capacity_mw in the state snapshot
+
+Reasoning
+
+The event directly represents a change in transmission capability.
+
+No redistribution or corrective actions are part of the mutation itself.
+
+🔒 Locked
+
+Q3. What invariants must remain true immediately after this mutation?
+
+Answer
+
+Edge still references valid from_node and to_node
+
+Edge remains ACTIVE
+
+Topology structure (nodes and edges) is unchanged
+
+State snapshot remains internally consistent
+
+Reasoning
+
+Capacity change does not delete edges or nodes.
+
+Domain integrity must be preserved.
+
+🔒 Locked
+
+Q4. What consequences must be derived from this mutation?
+
+Answer
+
+Possible congestion if load demand exceeds new edge capacity
+
+Redistribution of power flows may be required
+
+Priority-based unmet demand may occur
+
+Potential load shedding if redistribution cannot satisfy all loads
+
+Reasoning
+
+These are simulation effects, not part of the mutation itself.
+
+Must be computed after applying the event in the simulation layer.
+
+🔒 Locked
+
+Q5. What structural or topological queries are required?
+
+Answer
+
+Identify all nodes reachable through current edge capacities
+
+Determine connected components or affected islands (if constraints limit flow)
+
+Evaluate alternative paths from generators to loads
+
+Compute bottleneck edges for potential violations
+
+Reasoning
+
+Even though topology doesn’t change, feasible flows are constrained.
+
+Reachability and path-finding are essential for redistribution.
+
+🔒 Locked
+
+Q6. What prioritization, ordering, or selection rules are required?
+
+Answer
+
+Allocate generation to loads based on priority
+
+Determine which loads to shed first if unmet demand occurs
+
+Select alternative paths in case of constrained edges
+
+Reasoning
+
+Violations must be handled deterministically
+
+Decisions are domain-driven (priority, critical loads)
+
+🔒 Locked
+
+Q7. Which data structures are therefore required?
+
+Answer
+
+Graph → represent grid structure
+
+Dictionary → track remaining capacities of plants, substations, and edges
+
+Priority Queue → determine load shedding order
+
+Reasoning
+
+Structures directly support redistribution and corrective measures.
+
+Union-Find may not be strictly needed unless islanding occurs due to other constraints.
+
+🔒 Locked
+
+Q8. What is the termination condition for processing this event?
+
+Answer
+Processing stops when:
+
+All power flows respect updated edge capacities, AND
+
+No further corrective actions (load shedding) are possible
+
+Reasoning
+
+Ensures simulation determinism
+
+Prevents infinite corrective loops
+
+🔒 Locked
+
+Q9. What outputs must be produced and stored?
+
+Answer
+
+Updated state snapshot with new edge capacity
+
+Violations encountered (unserved loads, edge constraints)
+
+Load shedding actions taken (if any)
+
+Reference to the triggering event
+
+Derived metrics (e.g., edge utilization, congestion)
+
+Reasoning
+
+Required for replay, analysis, and reporting
+
+Supports deterministic simulation and debugging
+
+🔒 Locked
+
+✅ EDGE_CAPACITY_CHANGE — Fully Designed (Conceptually)
+
+Event boundaries are clear
+
+Data structures are justified
+
+Algorithm and simulation responsibilities are well-defined
+
+Implementation can proceed mechanically

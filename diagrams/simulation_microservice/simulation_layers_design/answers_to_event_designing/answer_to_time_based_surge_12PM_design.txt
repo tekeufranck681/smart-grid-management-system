@@ -1,0 +1,171 @@
+Event: TIME_BASED_GENERATION_SURGE (12 PM)
+
+Q1. Which layer(s) does this event touch?
+
+Answer
+
+State (generation capacity of solar plant nodes)
+
+Reasoning
+
+The topology does not change. Connections remain intact.
+
+The event only mutates generation output at a specific time (12 PM).
+
+No edges or loads are directly mutated, but downstream flows may be affected by this surge.
+
+🔒 Locked
+
+Q2. What is the minimal direct mutation caused by this event?
+
+Answer
+
+Set plant.generation_mw = surged_generation_mw for the solar plant node
+
+Reasoning
+
+The event represents the midday solar ramp-up.
+
+No redistribution, load shedding, or curtailment occurs at this point—this is strictly a mutation layer change.
+
+🔒 Locked
+
+Q3. What invariants must remain true immediately after this mutation?
+
+Answer
+
+generation_mw >= 0
+
+generation_mw <= max_capacity_mw (if defined)
+
+Node references (id, type, plant_type) remain valid
+
+Topology unchanged
+
+Reasoning
+
+Domain integrity of nodes must be preserved.
+
+Event cannot violate internal state consistency of the DAG.
+
+🔒 Locked
+
+Q4. What consequences must be derived from this mutation?
+
+Answer
+
+Power flow imbalance may occur due to increased generation
+
+Line overloads may happen if transmission limits are exceeded
+
+Voltage or substation capacity violations may appear
+
+Potential need for load shedding if flows cannot be accommodated
+
+Reasoning
+
+These are effects, not part of the mutation itself.
+
+They are resolved during redistribution and corrective actions.
+
+🔒 Locked
+
+Q5. What structural or topological queries are required?
+
+Answer
+
+Identify the connected island downstream of the surged solar plant
+
+Determine which loads are affected by this surge
+
+Check alternative paths for power delivery from plant to loads
+
+Reasoning
+
+Even though topology does not change, reachability analysis is necessary to compute redistribution and potential violations.
+
+🔒 Locked
+
+Q6. What prioritization, ordering, or selection rules are required?
+
+Answer
+
+Priority of loads to shed (lowest priority first) if generation cannot be accommodated
+
+Priority of generation curtailment (lowest-priority generation curtailed first) if surplus occurs
+
+Order of path selection for power distribution to avoid overloading edges
+
+Reasoning
+
+Corrective actions must follow domain rules to respect critical loads and grid stability.
+
+🔒 Locked
+
+Q7. Which data structures are therefore required?
+
+Answer
+
+Graph → represent grid structure (nodes + edges)
+
+Priority Queue → handle load shedding or curtailment ordering
+
+Dictionaries / Hash maps → track remaining plant capacity, load demand, edge capacity
+
+Reasoning
+
+Necessary to efficiently compute power redistribution and apply corrective measures.
+
+🔒 Locked
+
+Q8. What is the termination condition for processing this event?
+
+Answer
+
+Stop when:
+
+All flows are within limits and
+
+No load shedding or curtailment remains to apply
+
+Reasoning
+
+Ensures deterministic completion
+
+Prevents infinite redistribution loops
+
+🔒 Locked
+
+Q9. What outputs must be produced and stored?
+
+Answer
+
+Updated state snapshot of the DAG after surge and corrective actions
+
+List of affected islands
+
+Violations encountered (line overloads, substation limits)
+
+Load shed amounts (if any)
+
+Generation curtailed (if any)
+
+Reference to the triggering TIME_BASED_GENERATION_SURGE event
+
+Reasoning
+
+Needed for replay, metrics, visualization, and analysis of time-based surge impact.
+
+🔒 Locked
+
+✅ TIME_BASED_GENERATION_SURGE (12 PM) — Fully Designed (Conceptually)
+
+At this point:
+
+All layers touched are explicit
+
+Mutations and derived consequences are clear
+
+Corrective logic and data structures are justified
+
+Algorithm boundaries and outputs are fully specified

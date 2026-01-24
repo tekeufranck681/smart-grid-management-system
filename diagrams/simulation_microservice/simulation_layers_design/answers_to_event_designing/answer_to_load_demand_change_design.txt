@@ -1,4 +1,4 @@
-Event: LOAD_CHANGE
+Event: LOAD_DEMAND_CHANGE
 Q1. Which layer(s) does this event touch?
 
 Answer
@@ -156,6 +156,6 @@ Required for replay, rollback, and metrics.
 
 🔒 Locked
 
-✅ LOAD_CHANGE — Questions Fully Answered
+✅ LOAD_DEMAND_CHANGE — Questions Fully Answered
 
 Everything is now fixed and consistent with previous events.
